@@ -77,6 +77,7 @@ input{font-family:inherit;font-size:inherit}
 .pet-speech{text-align:center;padding:0 16px 4px;min-height:24px}
 .pet-speech-bubble{display:inline-block;background:var(--bg-card);border:2px solid var(--primary-light);border-radius:16px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--text);box-shadow:var(--shadow);animation:speechBounce 0.4s ease}
 .pet-speech-bubble.urgent{border-color:var(--red);animation:speechShake 0.5s ease}
+.pet-speech-bubble.react{border-color:var(--mint);background:linear-gradient(135deg,#ECFDF5,#fff);animation:speechBounce 0.4s ease}
 @keyframes speechBounce{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
 @keyframes speechShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
 .btn-reset{width:100%;padding:14px;border-radius:var(--radius-sm);background:var(--border);color:var(--red);font-size:14px;font-weight:600;transition:transform 0.15s}

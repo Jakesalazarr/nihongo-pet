@@ -101,16 +101,8 @@
     updateStatBar('stat-thirst', p.thirst, 'fill-water');
     updateStatBar('stat-happy', p.happiness, 'fill-happy');
 
-    // Pet speech bubble — AI picks what to say
-    var need = PetManager.getUrgentNeed();
-    var speech = getPetSpeech(p.type, need);
-    var speechEl = el('pet-speech');
-    if (speech) {
-      var urgent = need && need.val < 20;
-      speechEl.innerHTML = '<span class="pet-speech-bubble' + (urgent ? ' urgent' : '') + '">' + esc(speech) + '</span>';
-    } else {
-      speechEl.innerHTML = '';
-    }
+    // Pet speech — only update if no active reaction bubble
+    if (!_speechTimer) updatePetSpeech();
 
     renderPet('pet-home');
   }
@@ -333,6 +325,9 @@
     el('cs-coins').textContent = '+' + state.coinsEarned + ' 🪙';
     el('modal-complete').classList.add('active');
 
+    // Pet reacts to study completion
+    PetManager.feed('happiness', 10 + Math.round(acc / 10));
+    showReaction('study_done');
     Diary.addEntry();
     var badges = Achievements.check();
     if (badges.length > 0) setTimeout(function() { toast(badges[0].emoji + ' Achievement: ' + badges[0].name + '!'); }, 1500);
@@ -434,11 +429,11 @@
           } else if (state.invTab === 'outfits') {
             var eq = PetManager.pet && PetManager.pet.equipped[it.slot] === it.id;
             if (eq) PetManager.unequip(it.slot);
-            else { PetManager.equip(it.slot, it.id); if (!Achievements.isUnlocked('first_outfit')) Achievements.unlock('first_outfit'); }
+            else { PetManager.equip(it.slot, it.id); if (!Achievements.isUnlocked('first_outfit')) Achievements.unlock('first_outfit'); showReaction('outfit'); }
             renderInventory();
           } else {
             if (Room.isPlaced(it.id)) Room.removeFurniture(it.id);
-            else { Room.placeFurniture(it.id, it.slot); if (!Achievements.isUnlocked('first_furniture')) Achievements.unlock('first_furniture'); }
+            else { Room.placeFurniture(it.id, it.slot); if (!Achievements.isUnlocked('first_furniture')) Achievements.unlock('first_furniture'); showReaction('furniture'); }
             renderInventory();
           }
         });
@@ -454,6 +449,9 @@
     if (item.effect.bonus) PetManager.feed(item.effect.bonus.stat, item.effect.bonus.amount);
     if (!Achievements.isUnlocked('feed_pet')) Achievements.unlock('feed_pet');
     Achievements.check();
+    // Pet reacts to food or drink
+    var reactionType = (item.effect.stat === 'thirst') ? 'feed_drink' : 'feed_food';
+    showReaction(reactionType);
     toast(PetManager.pet.name + ' enjoyed the ' + item.emoji + '!');
     updateHome();
     renderInventory();
@@ -495,7 +493,7 @@
     Economy.claimDaily();
     el('modal-daily').classList.remove('active');
     updateHome();
-    toast('Daily bonus claimed! 🌸');
+    showReaction('daily');
   }
 
   /* ======== PROFILE / MORE ======== */
@@ -558,6 +556,41 @@
   function on(nodes, evt, fn) { for (var i = 0; i < nodes.length; i++) nodes[i].addEventListener(evt, fn); }
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   function toast(msg) { var t = el('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, 2500); }
+
+  /* Show pet reaction speech bubble */
+  var _speechTimer = null;
+  function showReaction(action) {
+    if (!PetManager.pet) return;
+    var msg = getReaction(PetManager.pet.type, action);
+    if (!msg) return;
+    var speechEl = el('pet-speech');
+    speechEl.innerHTML = '<span class="pet-speech-bubble react">' + esc(msg) + '</span>';
+    clearTimeout(_speechTimer);
+    _speechTimer = setTimeout(function() {
+      // Return to normal AI speech after reaction fades
+      updatePetSpeech();
+    }, 3500);
+  }
+
+  function updatePetSpeech() {
+    if (!PetManager.pet) return;
+    var need = PetManager.getUrgentNeed();
+    var speech = getPetSpeech(PetManager.pet.type, need);
+    var speechEl = el('pet-speech');
+    if (speech) {
+      var urgent = need && need.val < 20;
+      speechEl.innerHTML = '<span class="pet-speech-bubble' + (urgent ? ' urgent' : '') + '">' + esc(speech) + '</span>';
+    } else {
+      // No urgent need — show happy/bliss message occasionally
+      var mood = PetManager.getMood();
+      if (mood === 'ecstatic') {
+        var bliss = getReaction(PetManager.pet.type, 'bliss');
+        speechEl.innerHTML = '<span class="pet-speech-bubble">' + esc(bliss) + '</span>';
+      } else {
+        speechEl.innerHTML = '';
+      }
+    }
+  }
 
   /* ======== RESET ======== */
   function resetPet() {

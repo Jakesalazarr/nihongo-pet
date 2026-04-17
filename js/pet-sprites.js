@@ -73,6 +73,128 @@ var PET_SPEECH = {
   }
 };
 
+/* Interaction reactions — triggered by user actions */
+var PET_REACTIONS = {
+  cat: {
+    feed_food: [
+      "Meow! Yummy! Thank you! 😋",
+      "*nom nom* Purr~ so good! 💕",
+      "Meow meow! My favorite! 🐱",
+      "Mew~ my tummy is happy! 😸"
+    ],
+    feed_drink: [
+      "Meow! So refreshing! 💧",
+      "*lap lap lap* Purr~ 😸",
+      "Mew~ thank you for the drink! 💕"
+    ],
+    furniture: [
+      "Meow! New furniture! *sniffs* ✨",
+      "Mew~ the room looks so pretty! 🏠",
+      "*jumps on it* Meow! Mine! 🐱"
+    ],
+    outfit: [
+      "Meow! Do I look cute? 👒",
+      "*poses* Mew~ so fancy! ✨",
+      "Purr~ I feel like a model! 💕"
+    ],
+    study_done: [
+      "Meow! You're so smart! 📚",
+      "Purr~ proud of you! ⭐",
+      "Mew~ let's study again soon! 💪"
+    ],
+    daily: [
+      "Meow! You're back! I missed you! 💕",
+      "Mew~ welcome back! 🌸"
+    ],
+    bliss: [
+      "Purr~ life is perfect~ 💕",
+      "*curls up* Mew~ I love you~ 😸",
+      "Meow~ I'm the happiest cat! 🌟"
+    ]
+  },
+  cat2: {
+    feed_food: [
+      "Mrow! Delicious! Thank you! 😋",
+      "*munch munch* Mrow~ yummy! 💕",
+      "Mrow~ you're the best! 🐈‍⬛",
+      "Mrow~ so full and happy! 😸"
+    ],
+    feed_drink: [
+      "Mrow! Ahh~ refreshing! 💧",
+      "*sip sip* Mrow~ lovely! 😸",
+      "Mrow~ I was so thirsty! 💕"
+    ],
+    furniture: [
+      "Mrow! Ooh what's this? ✨",
+      "Mrow~ I love redecorating! 🏠",
+      "*sits on it* Mrow! Comfy! 🐈‍⬛"
+    ],
+    outfit: [
+      "Mrow! Am I fashionable? 👒",
+      "*struts* Mrow~ fabulous! ✨",
+      "Mrow~ runway ready! 💕"
+    ],
+    study_done: [
+      "Mrow! Great studying! 📚",
+      "Mrow~ you're getting better! ⭐",
+      "Mrow~ keep it up! 💪"
+    ],
+    daily: [
+      "Mrow! Finally! Where were you? 💕",
+      "Mrow~ *stretches* oh hey~ 🌸"
+    ],
+    bliss: [
+      "Purrrr~ so content~ 💕",
+      "*kneads blanket* Mrow~ 😸",
+      "Mrow~ couldn't be better! 🌟"
+    ]
+  },
+  dog: {
+    feed_food: [
+      "Woof! Yummy! *tail wag* 😋",
+      "*chomp chomp* Arf arf! 💕",
+      "Woof woof! Best human ever! 🐕",
+      "Arf~ belly so full! *rolls over* 😊"
+    ],
+    feed_drink: [
+      "Woof! *slurp slurp* Nice! 💧",
+      "*splash* Woof! Refreshing! 😊",
+      "Arf! That hit the spot! 💕"
+    ],
+    furniture: [
+      "Woof! New thing! *sniffs everywhere* ✨",
+      "Arf! Our home is so nice! 🏠",
+      "*circles around it* Woof! Love it! 🐕"
+    ],
+    outfit: [
+      "Woof! Do I look good? 👒",
+      "*spins around* Arf! I'm stylish! ✨",
+      "Woof! Best dressed pup! 💕"
+    ],
+    study_done: [
+      "Woof! You did amazing! 📚",
+      "Arf! *jumps around* So proud! ⭐",
+      "Woof woof! Again again! 💪"
+    ],
+    daily: [
+      "WOOF!! YOU'RE HOME!! 💕💕",
+      "*runs in circles* ARF ARF! 🌸"
+    ],
+    bliss: [
+      "*happy panting* Life is good! 💕",
+      "*tail wagging nonstop* Best day! 😊",
+      "Woof! Happiest pup alive! 🌟"
+    ]
+  }
+};
+
+function getReaction(petType, action) {
+  var reactions = PET_REACTIONS[petType] || PET_REACTIONS.cat;
+  var msgs = reactions[action];
+  if (!msgs || !msgs.length) return '';
+  return msgs[Math.floor(Math.random() * msgs.length)];
+}
+
 function getPetSpeech(petType, urgentNeed) {
   var speech = PET_SPEECH[petType] || PET_SPEECH.cat;
 
