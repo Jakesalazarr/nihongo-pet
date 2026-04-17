@@ -13,13 +13,9 @@
       wrapSavesForCloudSync();
     }
 
-    if (!PetManager.exists()) {
-      setTimeout(function() { el('splash').classList.remove('active'); showChoose(); }, 1200);
-    } else {
-      setTimeout(function() { el('splash').classList.remove('active'); nav('view-home'); checkDaily(); }, 1200);
-    }
-
     bindNav(); bindStudy(); bindShop(); bindInventory();
+    bindLogin();
+
     el('btn-reset').addEventListener('click', resetPet);
     el('btn-cloud').addEventListener('click', function() {
       if (typeof FirebaseSync === 'undefined' || !FirebaseSync.initialized) {
@@ -39,6 +35,70 @@
     setInterval(function() { PetManager.tick(); if (state.view === 'view-home') updateHome(); }, 60000);
 
     if ('serviceWorker' in navigator) navigator.serviceWorker.register('sw.js').catch(function(){});
+
+    // Flow: Splash (1.2s) → Login (if new) OR straight to Home/Choose
+    setTimeout(function() {
+      el('splash').classList.remove('active');
+      routeAfterSplash();
+    }, 1200);
+  }
+
+  function routeAfterSplash() {
+    var loginDone = localStorage.getItem('np_login_done');
+    var signedIn = (typeof FirebaseSync !== 'undefined' && FirebaseSync.user);
+
+    if (!loginDone && !signedIn) {
+      // First-time user — show login screen
+      nav('view-login');
+      return;
+    }
+    // Returning user — go to appropriate screen
+    if (PetManager.exists()) {
+      nav('view-home');
+      checkDaily();
+    } else {
+      showChoose();
+    }
+  }
+
+  function bindLogin() {
+    el('btn-login-google').addEventListener('click', function() {
+      if (typeof FirebaseSync === 'undefined' || !FirebaseSync.initialized) {
+        toast('Cloud sync loading...');
+        return;
+      }
+      // Sign in, wait for auth to complete
+      FirebaseSync.signIn();
+      var tries = 0;
+      var poll = setInterval(function() {
+        tries++;
+        if (FirebaseSync.user) {
+          clearInterval(poll);
+          localStorage.setItem('np_login_done', '1');
+          // Give cloud a moment to load/reload
+          setTimeout(function() {
+            if (PetManager.exists()) {
+              nav('view-home');
+              checkDaily();
+            } else {
+              showChoose();
+            }
+          }, 600);
+        } else if (tries > 60) { // 30s timeout
+          clearInterval(poll);
+        }
+      }, 500);
+    });
+
+    el('btn-login-skip').addEventListener('click', function() {
+      localStorage.setItem('np_login_done', '1');
+      if (PetManager.exists()) {
+        nav('view-home');
+        checkDaily();
+      } else {
+        showChoose();
+      }
+    });
   }
 
   /* ======== NAV ======== */
@@ -179,6 +239,8 @@
     if (pctEl) pctEl.textContent = val + '%';
   }
 
+  var _petFrameTimers = {};
+
   function renderPet(containerId) {
     var c = el(containerId);
     if (!c || !PetManager.pet) return;
@@ -190,8 +252,25 @@
     if (p.equipped.acc) outfitClasses += ' ' + getOutfitClass(p.equipped.acc);
     if (p.equipped.body) outfitClasses += ' ' + getOutfitClass(p.equipped.body);
 
-    var nudge = getNudgeMsg(mood);
-    var nudgeHtml = nudge ? '<div class="pet-nudge">' + nudge + ' <span class="nudge-btn" onclick="document.querySelector(\'[data-view=view-chapters]\').click()">Study!</span></div>' : '<div class="pet-nudge"></div>';
+    // Map mood to animation row
+    var animName = MOOD_TO_ANIM[mood] || 'idle';
+    var data = SPRITE_DATA[p.type] || SPRITE_DATA.cat;
+    if (!data.rows.hasOwnProperty(animName)) animName = 'idle';
+    var row = data.rows[animName];
+    var frameCount = data.frameCounts[animName];
+    var scale = data.scale;
+    var fw = data.frameW * scale;
+    var fh = data.frameH * scale;
+    var sheetW = data.sheetW * scale;
+    var sheetH = data.sheetH * scale;
+
+    var isMini = containerId.indexOf('mini') !== -1;
+    var finalW = isMini ? fw / 2 : fw;
+    var finalH = isMini ? fh / 2 : fh;
+    var finalSheetW = isMini ? data.sheetW : sheetW;
+    var finalSheetH = isMini ? data.sheetH : sheetH;
+    var finalFw = isMini ? data.frameW : fw;
+    var finalFh = isMini ? data.frameH : fh;
 
     var effectsHtml =
       '<div class="pet-effects">' +
@@ -201,12 +280,42 @@
         '<span class="fx fx-thought">🍙</span>' +
       '</div>';
 
+    // Inline styles guarantee the sprite renders regardless of CSS caching
+    var spriteStyle =
+      'width:' + finalW + 'px;' +
+      'height:' + finalH + 'px;' +
+      'background-image:url(' + data.src + ');' +
+      'background-size:' + finalSheetW + 'px ' + finalSheetH + 'px;' +
+      'background-repeat:no-repeat;' +
+      'background-position:0 -' + (row * finalFh) + 'px;' +
+      'image-rendering:pixelated;' +
+      '-ms-interpolation-mode:nearest-neighbor;';
+
     c.innerHTML =
       '<div class="pet pet-' + p.type + ' mood-' + mood + outfitClasses + '">' +
-        '<div class="pet-sprite"></div>' +
-        effectsHtml + nudgeHtml +
+        '<div class="pet-sprite" style="' + spriteStyle + '"></div>' +
+        effectsHtml +
         '<div class="outfit-hat"></div><div class="outfit-acc"></div>' +
       '</div>';
+
+    // JS-driven frame animation (works even if CSS animations fail)
+    startFrameAnimation(containerId, c.querySelector('.pet-sprite'), row, frameCount, finalFw, finalFh);
+  }
+
+  function startFrameAnimation(id, spriteEl, row, frameCount, frameW, frameH) {
+    if (_petFrameTimers[id]) clearInterval(_petFrameTimers[id]);
+    if (!spriteEl || frameCount <= 1) return;
+    var frame = 0;
+    var speed = frameCount > 6 ? 100 : 250; // dog runs faster
+    _petFrameTimers[id] = setInterval(function() {
+      if (!spriteEl.isConnected) {
+        clearInterval(_petFrameTimers[id]);
+        delete _petFrameTimers[id];
+        return;
+      }
+      frame = (frame + 1) % frameCount;
+      spriteEl.style.backgroundPosition = '-' + (frame * frameW) + 'px -' + (row * frameH) + 'px';
+    }, speed);
   }
 
   function getOutfitClass(itemId) {

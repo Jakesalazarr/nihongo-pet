@@ -1,4 +1,4 @@
-var CACHE = 'np-v6';
+var CACHE = 'np-v8';
 var ASSETS = ['./', './index.html', './css/style.css', './css/pets.css',
   './sprites/cat.png', './sprites/cat2.png', './sprites/dog.png',
   './js/firebase-sync.js',

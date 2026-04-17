@@ -9,8 +9,8 @@
   <link rel="manifest" href="manifest.json">
   <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
   <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
-  <link rel="stylesheet" href="css/style.css">
-  <link rel="stylesheet" href="css/pets.css">
+  <link rel="stylesheet" href="css/style.css?v=8">
+  <link rel="stylesheet" href="css/pets.css?v=8">
 </head>
 <body>
   <div id="app">
@@ -22,6 +22,26 @@
         <h1 class="splash-title">Nihongo Pet</h1>
         <p class="splash-sub">Learn Japanese with your cute companion!</p>
         <div class="splash-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      </div>
+    </div>
+
+    <!-- Login -->
+    <div id="view-login" class="view">
+      <div class="login-content">
+        <div class="login-paw">🐾</div>
+        <h1 class="login-title">Nihongo Pet</h1>
+        <p class="login-sub">Learn Japanese with your cute companion!</p>
+        <p class="login-tagline">📚 Study to earn <b>yen</b><br>🍙 Buy food &amp; resources for your pet</p>
+        <button class="btn-login-google" id="btn-login-google">
+          <span class="g-icon">G</span>
+          Sign in with Google
+        </button>
+        <div class="login-benefits">
+          <div>☁️ Save progress to the cloud</div>
+          <div>📱 Sync across all devices</div>
+          <div>🔒 Never lose your pet</div>
+        </div>
+        <button class="btn-login-skip" id="btn-login-skip">Continue without login</button>
       </div>
     </div>
 
@@ -296,13 +316,13 @@
         <div class="tut-content">
           <div class="tut-slide active" data-step="0">
             <div class="tut-icon">📚</div>
-            <h2 class="tut-title">Study Flashcards</h2>
-            <p class="tut-text">Learn Japanese words with flip cards, quizzes, and typing. Earn coins for every correct answer!</p>
+            <h2 class="tut-title">Study to Earn Yen</h2>
+            <p class="tut-text">Learn Japanese words with flip cards, quizzes, and typing. Every correct answer earns <b>yen</b> you can spend on your pet!</p>
           </div>
           <div class="tut-slide" data-step="1">
             <div class="tut-icon">🍙</div>
-            <h2 class="tut-title">Care for Your Pet</h2>
-            <p class="tut-text">Your pet gets hungry and thirsty over time. Use your coins to buy food and drinks to keep them happy!</p>
+            <h2 class="tut-title">Buy Food &amp; Resources</h2>
+            <p class="tut-text">Your pet gets hungry and thirsty over time. Spend your yen on food, drinks, and supplies to keep them happy!</p>
           </div>
           <div class="tut-slide" data-step="2">
             <div class="tut-icon">🏠</div>
@@ -341,18 +361,18 @@
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
   <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
-  <script src="js/firebase-sync.js"></script>
-  <script src="js/pet-sprites.js"></script>
-  <script src="js/classnotes.js"></script>
-  <script src="js/data.js"></script>
-  <script src="js/shop.js"></script>
-  <script src="js/srs.js"></script>
-  <script src="js/pet.js"></script>
-  <script src="js/economy.js"></script>
-  <script src="js/inventory.js"></script>
-  <script src="js/room.js"></script>
-  <script src="js/achievements.js"></script>
-  <script src="js/diary.js"></script>
-  <script src="js/app.js"></script>
+  <script src="js/firebase-sync.js?v=8"></script>
+  <script src="js/pet-sprites.js?v=8"></script>
+  <script src="js/classnotes.js?v=8"></script>
+  <script src="js/data.js?v=8"></script>
+  <script src="js/shop.js?v=8"></script>
+  <script src="js/srs.js?v=8"></script>
+  <script src="js/pet.js?v=8"></script>
+  <script src="js/economy.js?v=8"></script>
+  <script src="js/inventory.js?v=8"></script>
+  <script src="js/room.js?v=8"></script>
+  <script src="js/achievements.js?v=8"></script>
+  <script src="js/diary.js?v=8"></script>
+  <script src="js/app.js?v=8"></script>
 </body>
 </html>
