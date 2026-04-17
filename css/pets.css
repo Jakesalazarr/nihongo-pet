@@ -1,99 +1,202 @@
-/* Pet rendering — SVG-based with mood toggles */
+/* Pixel sprite pet rendering */
 
 /* Container */
-.pet { position:relative; width:160px; height:180px; display:flex; align-items:center; justify-content:center; animation: petFloat 2.5s ease-in-out infinite; }
-.pet svg { width:160px; height:160px; }
-
-/* Shadow */
-.pet::after {
-  content:''; position:absolute; bottom:-5px; left:50%; transform:translateX(-50%);
-  width:80px; height:12px; border-radius:50%;
-  background:radial-gradient(ellipse,rgba(200,150,180,0.2),transparent 70%);
+.pet {
+  position: relative;
+  width: 128px; height: 150px;
+  display: flex; flex-direction: column;
+  align-items: center; justify-content: flex-start;
 }
 
-/* Mood toggles — default state = happy */
-.pet .e-happy, .pet .e-neutral, .pet .e-sad, .pet .e-sleep { display:none; }
-.pet .m-wide, .pet .m-sad, .pet .m-flat { display:none; }
-.pet .fx-sparkle, .pet .fx-tear, .pet .fx-zzz, .pet .fx-thought { display:none; }
+/* Sprite element */
+.pet-sprite {
+  width: 128px; height: 128px;
+  image-rendering: pixelated;
+  image-rendering: -moz-crisp-edges;
+  image-rendering: crisp-edges;
+  overflow: hidden;
+  animation: petFloat 2.5s ease-in-out infinite;
+}
 
-/* Ecstatic */
-.mood-ecstatic .e-normal { display:none; }
-.mood-ecstatic .e-happy { display:inline; }
-.mood-ecstatic .m-smile { display:none; }
-.mood-ecstatic .m-wide { display:inline; }
-.mood-ecstatic .fx-sparkle { display:inline; }
-.mood-ecstatic { animation: petBounce 0.8s ease-in-out infinite; }
+/* Shadow under pet */
+.pet-sprite::after {
+  content: '';
+  position: absolute; bottom: 18px; left: 50%; transform: translateX(-50%);
+  width: 70px; height: 10px; border-radius: 50%;
+  background: radial-gradient(ellipse, rgba(200,150,180,0.18), transparent 70%);
+}
 
-/* Happy — default, just float */
-.mood-happy { animation: petFloat 2.5s ease-in-out infinite; }
+/* === CAT (brown) — 256x192, 4 frames/row, 64x64 === */
+.pet-cat .pet-sprite {
+  background-image: url('../sprites/cat.png');
+  background-size: 512px 384px;
+  background-repeat: no-repeat;
+}
+.pet-cat .pet-sprite { animation: cat-idle 0.8s steps(4) infinite, petFloat 2.5s ease-in-out infinite; }
+.mood-hungry.pet-cat .pet-sprite { animation: cat-eat 0.8s steps(4) infinite; }
+.mood-sleeping.pet-cat .pet-sprite { animation: cat-sleep 1.2s steps(4) infinite; }
 
-/* Neutral */
-.mood-neutral .e-normal { display:none; }
-.mood-neutral .e-neutral { display:inline; }
-.mood-neutral .m-smile { display:none; }
-.mood-neutral .m-flat { display:inline; }
-.mood-neutral { animation: petFloat 3.5s ease-in-out infinite; }
+@keyframes cat-idle { to { background-position-x: -512px; } }
+@keyframes cat-eat { from { background-position: 0 -128px; } to { background-position: -512px -128px; } }
+@keyframes cat-sleep { from { background-position: 0 -256px; } to { background-position: -512px -256px; } }
 
-/* Hungry */
-.mood-hungry .e-normal { display:none; }
-.mood-hungry .e-sad { display:inline; }
-.mood-hungry .m-smile { display:none; }
-.mood-hungry .m-sad { display:inline; }
-.mood-hungry .fx-thought { display:inline; }
-.mood-hungry { animation: petShake 2s ease-in-out infinite; }
+/* === CAT2 (tuxedo) — 256x188, 4 frames/row, 64x64 === */
+.pet-cat2 .pet-sprite {
+  background-image: url('../sprites/cat2.png');
+  background-size: 512px 376px;
+  background-repeat: no-repeat;
+}
+.pet-cat2 .pet-sprite { animation: cat2-idle 0.8s steps(4) infinite, petFloat 2.5s ease-in-out infinite; }
+.mood-hungry.pet-cat2 .pet-sprite { animation: cat2-eat 0.8s steps(4) infinite; }
+.mood-sleeping.pet-cat2 .pet-sprite { animation: cat2-sleep 1.2s steps(4) infinite; }
 
-/* Sad */
-.mood-sad .e-normal { display:none; }
-.mood-sad .e-sad { display:inline; }
-.mood-sad .m-smile { display:none; }
-.mood-sad .m-sad { display:inline; }
-.mood-sad .fx-tear { display:inline; }
-.mood-sad { animation: petDroop 3s ease-in-out infinite; }
+@keyframes cat2-idle { to { background-position-x: -512px; } }
+@keyframes cat2-eat { from { background-position: 0 -128px; } to { background-position: -512px -128px; } }
+@keyframes cat2-sleep { from { background-position: 0 -256px; } to { background-position: -512px -256px; } }
 
-/* Sleeping */
-.mood-sleeping .e-normal { display:none; }
-.mood-sleeping .e-sleep { display:inline; }
-.mood-sleeping .m-smile { display:none; }
-.mood-sleeping .m-flat { display:inline; }
-.mood-sleeping .fx-zzz { display:inline; }
-.mood-sleeping { animation: petBreathe 3s ease-in-out infinite; }
+/* === DOG (golden retriever) — 640x64, 10 frames, 1 row === */
+.pet-dog .pet-sprite {
+  background-image: url('../sprites/dog.png');
+  background-size: 1280px 128px;
+  background-repeat: no-repeat;
+}
+.pet-dog .pet-sprite { animation: dog-run 1s steps(10) infinite, petFloat 2.5s ease-in-out infinite; }
+.mood-sleeping.pet-dog .pet-sprite {
+  animation: none;
+  background-position: 0 0;
+  opacity: 0.7;
+}
+.mood-sad.pet-dog .pet-sprite {
+  animation: dog-run 2s steps(10) infinite;
+  filter: brightness(0.85);
+}
+.mood-hungry.pet-dog .pet-sprite {
+  animation: dog-run 1.5s steps(10) infinite;
+}
 
-/* Outfit overlays (emoji-based for simplicity) */
-.outfit-hat, .outfit-acc, .outfit-body { position:absolute; pointer-events:none; z-index:5; }
-.outfit-hat { top:0; left:50%; transform:translateX(-50%); }
-.outfit-acc { top:45%; left:50%; transform:translateX(-50%); }
-.outfit-body { top:30%; left:50%; transform:translateX(-50%); }
+@keyframes dog-run { to { background-position-x: -1280px; } }
 
-.has-red-bow .outfit-hat::after { content:'🎀'; font-size:28px; display:block; transform:translate(22px,-2px); }
-.has-straw-hat .outfit-hat::after { content:'👒'; font-size:32px; display:block; transform:translate(0px,-8px); }
-.has-crown .outfit-hat::after { content:'👑'; font-size:26px; display:block; transform:translate(0px,-5px); }
-.has-flower-wreath .outfit-hat::after { content:'💐'; font-size:24px; display:block; transform:translate(0px,-4px); }
-.has-bandana .outfit-hat::after { content:'🎌'; font-size:22px; display:block; transform:translate(0px,-2px); }
-.has-glasses .outfit-acc::after { content:'👓'; font-size:22px; display:block; transform:translate(0px,-8px); }
-.has-scarf .outfit-acc::after { content:'🧣'; font-size:22px; display:block; transform:translate(0px,10px); }
-.has-backpack .outfit-body::after { content:'🎒'; font-size:22px; display:block; transform:translate(30px,5px); }
-.has-cape .outfit-body::after { content:'🦸'; font-size:22px; display:block; transform:translate(-30px,5px); }
-.has-kimono-sash .outfit-body::after { content:'👘'; font-size:22px; display:block; transform:translate(0px,15px); }
+/* === MOOD EFFECTS === */
+.pet-effects {
+  position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+  pointer-events: none; overflow: visible;
+}
+.pet .fx { display: none; position: absolute; }
 
-/* Pet select card preview */
-.choose-pet-preview { width:100px; height:100px; margin:0 auto 8px; }
-.choose-pet-preview svg { width:100%; height:100%; }
-.choose-pet-preview .e-happy, .choose-pet-preview .e-neutral, .choose-pet-preview .e-sad, .choose-pet-preview .e-sleep { display:none; }
-.choose-pet-preview .m-wide, .choose-pet-preview .m-sad, .choose-pet-preview .m-flat { display:none; }
-.choose-pet-preview .fx-sparkle, .choose-pet-preview .fx-tear, .choose-pet-preview .fx-zzz, .choose-pet-preview .fx-thought { display:none; }
+/* Ecstatic — sparkles */
+.mood-ecstatic .fx-sparkle { display: block; }
+.mood-ecstatic .pet-sprite { animation-duration: 0.5s !important; }
+.fx-sparkle {
+  position: absolute; top: -5px; left: 50%; transform: translateX(-50%);
+  font-size: 20px;
+  animation: sparkleFloat 1.2s ease-in-out infinite;
+}
+.fx-sparkle::after {
+  content: '⭐'; position: absolute; top: 10px; left: 40px; font-size: 14px;
+  animation: sparkleFloat 1.2s ease-in-out infinite 0.4s;
+}
 
-/* Study mini pet */
-.study-pet-mini .pet { width:80px; height:90px; }
-.study-pet-mini .pet svg { width:80px; height:80px; }
-.study-pet-mini .pet::after { display:none; }
+/* Sad — tear */
+.mood-sad .fx-tear { display: block; }
+.fx-tear {
+  position: absolute; top: 30px; right: 25px;
+  font-size: 16px;
+  animation: tearDrop 1.5s ease-in-out infinite;
+}
 
-/* Animations */
-@keyframes petFloat { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-8px); } }
-@keyframes petBounce { 0%,100% { transform:translateY(0); } 50% { transform:translateY(-14px); } }
-@keyframes petShake { 0%,100% { transform:translateX(0) translateY(0); } 10%,30%,50%,70%,90% { transform:translateX(-3px); } 20%,40%,60%,80% { transform:translateX(3px); } }
-@keyframes petDroop { 0%,100% { transform:translateY(0); } 50% { transform:translateY(4px); } }
-@keyframes petBreathe { 0%,100% { transform:scale(1); } 50% { transform:scale(1.03); } }
+/* Hungry — thought bubble */
+.mood-hungry .fx-thought { display: block; }
+.fx-thought {
+  position: absolute; top: -20px; right: -15px;
+  background: #fff; border-radius: 16px;
+  padding: 6px 10px; font-size: 18px;
+  box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+  animation: thoughtPulse 2s ease-in-out infinite;
+}
+.fx-thought::after {
+  content: ''; position: absolute; bottom: -6px; left: 15px;
+  width: 10px; height: 10px; background: #fff;
+  border-radius: 50%;
+  box-shadow: 0 2px 4px rgba(0,0,0,0.08);
+}
 
-/* Correct/wrong reactions for study mode */
-.pet-react-correct { animation: petBounce 0.4s ease; }
-.pet-react-wrong { animation: petShake 0.4s ease; }
+/* Sleeping — zzz */
+.mood-sleeping .fx-zzz { display: block; }
+.fx-zzz {
+  position: absolute; top: 5px; right: -10px;
+  font-size: 18px; color: #C4B5FD;
+  animation: zzzFloat 2s ease-in-out infinite;
+}
+
+/* === NUDGE BUBBLE === */
+.pet-nudge {
+  display: none;
+  position: absolute; bottom: -50px; left: 50%; transform: translateX(-50%);
+  background: #fff; border-radius: 14px;
+  padding: 8px 14px; font-size: 12px; font-weight: 600;
+  color: #4A3548; white-space: nowrap;
+  box-shadow: 0 3px 12px rgba(200,150,180,0.2);
+  border: 2px solid #FBCFE8;
+  animation: nudgePulse 2s ease-in-out infinite;
+}
+.pet-nudge::before {
+  content: ''; position: absolute; top: -8px; left: 50%; transform: translateX(-50%);
+  border: 8px solid transparent; border-bottom-color: #FBCFE8;
+  border-top: 0;
+}
+.mood-hungry .pet-nudge,
+.mood-sad .pet-nudge { display: block; }
+.pet-nudge .nudge-btn {
+  display: inline-block; margin-left: 6px;
+  background: #F472B6; color: #fff;
+  padding: 3px 10px; border-radius: 8px;
+  font-size: 11px; font-weight: 700;
+  cursor: pointer;
+}
+
+/* === PET SELECT CARD (preview) === */
+.choose-pet-preview {
+  width: 96px; height: 96px; margin: 0 auto 8px;
+  image-rendering: pixelated;
+  background-size: auto 192px;
+  background-repeat: no-repeat;
+}
+.choose-pet-preview.preview-cat { background-image: url('../sprites/cat.png'); background-size: 384px 144px; animation: previewCat 0.8s steps(4) infinite; }
+.choose-pet-preview.preview-cat2 { background-image: url('../sprites/cat2.png'); background-size: 384px 141px; animation: previewCat2 0.8s steps(4) infinite; }
+.choose-pet-preview.preview-dog { background-image: url('../sprites/dog.png'); background-size: 960px 96px; animation: previewDog 1s steps(10) infinite; }
+
+@keyframes previewCat { to { background-position-x: -384px; } }
+@keyframes previewCat2 { to { background-position-x: -384px; } }
+@keyframes previewDog { to { background-position-x: -960px; } }
+
+/* === OUTFIT OVERLAYS === */
+.outfit-hat, .outfit-acc, .outfit-body { position: absolute; pointer-events: none; z-index: 5; }
+.outfit-hat { top: 5px; left: 50%; transform: translateX(-50%); }
+.outfit-acc { top: 45%; left: 50%; transform: translateX(-50%); }
+.has-red-bow .outfit-hat::after { content: '🎀'; font-size: 22px; display: block; transform: translate(16px, -4px); }
+.has-straw-hat .outfit-hat::after { content: '👒'; font-size: 26px; display: block; }
+.has-crown .outfit-hat::after { content: '👑'; font-size: 22px; display: block; }
+.has-flower-wreath .outfit-hat::after { content: '💐'; font-size: 20px; display: block; }
+.has-glasses .outfit-acc::after { content: '👓'; font-size: 18px; display: block; transform: translateY(-12px); }
+.has-scarf .outfit-acc::after { content: '🧣'; font-size: 18px; display: block; transform: translateY(8px); }
+
+/* === STUDY MINI PET === */
+.study-pet-mini .pet { width: 64px; height: 75px; }
+.study-pet-mini .pet-sprite { width: 64px; height: 64px; }
+.study-pet-mini .pet-cat .pet-sprite { background-size: 256px 192px; }
+.study-pet-mini .pet-cat2 .pet-sprite { background-size: 256px 188px; }
+.study-pet-mini .pet-dog .pet-sprite { background-size: 640px 64px; }
+.study-pet-mini .pet-nudge { display: none !important; }
+.study-pet-mini .pet-effects { display: none; }
+
+/* === ANIMATIONS === */
+@keyframes petFloat { 0%,100% { transform: translateY(0); } 50% { transform: translateY(-6px); } }
+@keyframes sparkleFloat { 0%,100% { transform: translateX(-50%) translateY(0); opacity: 1; } 50% { transform: translateX(-50%) translateY(-10px); opacity: 0.6; } }
+@keyframes tearDrop { 0% { transform: translateY(0); opacity: 0; } 30% { opacity: 1; } 100% { transform: translateY(15px); opacity: 0; } }
+@keyframes thoughtPulse { 0%,100% { transform: scale(1); } 50% { transform: scale(1.08); } }
+@keyframes zzzFloat { 0% { transform: translate(0,0); opacity: 1; } 100% { transform: translate(10px,-20px); opacity: 0; } }
+@keyframes nudgePulse { 0%,100% { transform: translateX(-50%) scale(1); } 50% { transform: translateX(-50%) scale(1.03); } }
+
+/* Correct/wrong study reactions */
+.pet-react-correct .pet-sprite { animation-duration: 0.3s !important; }
+.pet-react-wrong .pet-sprite { filter: hue-rotate(180deg); transition: filter 0.3s; }

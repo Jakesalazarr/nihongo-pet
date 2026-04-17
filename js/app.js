@@ -62,8 +62,7 @@
       (function(t) {
         var card = document.createElement('button');
         card.className = 'choose-card';
-        var previewSvg = PET_SPRITES[t.id] || '';
-        card.innerHTML = '<div class="choose-pet-preview">' + previewSvg + '</div><span class="choose-card-name">' + t.name + '<br><small style="color:var(--text-3)">' + t.nameJa + '</small></span>';
+        card.innerHTML = '<div class="choose-pet-preview preview-' + t.id + '"></div><span class="choose-card-name">' + t.name + '<br><small style="color:var(--text-3)">' + t.nameJa + '</small></span>';
         card.addEventListener('click', function() {
           var all = grid.querySelectorAll('.choose-card');
           for (var j = 0; j < all.length; j++) all[j].classList.remove('selected');
@@ -109,15 +108,29 @@
     if (!c || !PetManager.pet) return;
     var p = PetManager.pet;
     var mood = PetManager.getMood();
-    var svg = PET_SPRITES[p.type] || PET_SPRITES.cat;
 
     var outfitClasses = '';
     if (p.equipped.hat) outfitClasses += ' ' + getOutfitClass(p.equipped.hat);
     if (p.equipped.acc) outfitClasses += ' ' + getOutfitClass(p.equipped.acc);
     if (p.equipped.body) outfitClasses += ' ' + getOutfitClass(p.equipped.body);
 
-    c.innerHTML = '<div class="pet mood-' + mood + outfitClasses + '">' + svg +
-      '<div class="outfit-hat"></div><div class="outfit-acc"></div><div class="outfit-body"></div></div>';
+    var nudge = getNudgeMsg(mood);
+    var nudgeHtml = nudge ? '<div class="pet-nudge">' + nudge + ' <span class="nudge-btn" onclick="document.querySelector(\'[data-view=view-chapters]\').click()">Study!</span></div>' : '<div class="pet-nudge"></div>';
+
+    var effectsHtml =
+      '<div class="pet-effects">' +
+        '<span class="fx fx-sparkle">✨</span>' +
+        '<span class="fx fx-tear">💧</span>' +
+        '<span class="fx fx-zzz">💤</span>' +
+        '<span class="fx fx-thought">🍙</span>' +
+      '</div>';
+
+    c.innerHTML =
+      '<div class="pet pet-' + p.type + ' mood-' + mood + outfitClasses + '">' +
+        '<div class="pet-sprite"></div>' +
+        effectsHtml + nudgeHtml +
+        '<div class="outfit-hat"></div><div class="outfit-acc"></div>' +
+      '</div>';
   }
 
   function getOutfitClass(itemId) {

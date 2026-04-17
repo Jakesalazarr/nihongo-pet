@@ -4,11 +4,9 @@ var PetManager = {
   pet: null,
 
   TYPES: [
-    { id: 'cat', name: 'Cat', nameJa: 'ねこ', emoji: '🐱', color: '#FFB7C5' },
-    { id: 'dog', name: 'Dog', nameJa: 'いぬ', emoji: '🐶', color: '#FFDAB9' },
-    { id: 'bunny', name: 'Bunny', nameJa: 'うさぎ', emoji: '🐰', color: '#E8D5F5' },
-    { id: 'hamster', name: 'Hamster', nameJa: 'ハムスター', emoji: '🐹', color: '#FFE4B5' },
-    { id: 'penguin', name: 'Penguin', nameJa: 'ペンギン', emoji: '🐧', color: '#B8D4E3' }
+    { id: 'cat', name: 'Mochi Cat', nameJa: 'ねこ', emoji: '🐱', color: '#FFB7C5' },
+    { id: 'cat2', name: 'Tuxedo Cat', nameJa: 'くろねこ', emoji: '🐈‍⬛', color: '#B0B0C0' },
+    { id: 'dog', name: 'Golden Dog', nameJa: 'いぬ', emoji: '🐶', color: '#FFDAB9' }
   ],
 
   load: function() {
