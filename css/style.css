@@ -261,6 +261,19 @@ input{font-family:inherit;font-size:inherit}
 .btn-primary-full{width:100%;padding:16px;border-radius:var(--radius-sm);background:linear-gradient(135deg,var(--primary),var(--pink));color:#fff;font-size:16px;font-weight:700;box-shadow:0 4px 12px rgba(244,114,182,0.3);transition:transform 0.15s}
 .btn-primary-full:active{transform:scale(0.97)}
 
+/* Tutorial */
+.tut-content{text-align:center;padding:24px 16px}
+.tut-slide{display:none}
+.tut-slide.active{display:block}
+.tut-icon{font-size:56px;margin-bottom:12px}
+.tut-title{font-size:20px;font-weight:700;color:var(--primary-dark);margin-bottom:8px}
+.tut-text{font-size:14px;color:var(--text-2);line-height:1.6;margin-bottom:16px}
+.tut-dots{display:flex;justify-content:center;gap:8px;margin-bottom:20px}
+.tut-dot{width:8px;height:8px;border-radius:50%;background:var(--border);transition:background 0.2s}
+.tut-dot.active{background:var(--primary)}
+.auto-save{text-align:center;font-size:11px;color:var(--text-3);padding:8px 0}
+.auto-save::before{content:'✓ ';color:var(--green)}
+
 /* Toast */
 .toast{position:fixed;bottom:calc(var(--nav-h)+var(--safe-b)+16px);left:50%;transform:translateX(-50%) translateY(100px);background:var(--text);color:#fff;padding:10px 20px;border-radius:20px;font-size:13px;font-weight:600;z-index:60;opacity:0;transition:all 0.3s;white-space:nowrap}
 .toast.show{opacity:1;transform:translateX(-50%) translateY(0)}

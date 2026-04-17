@@ -275,6 +275,32 @@
       </div>
     </div>
 
+    <!-- Tutorial -->
+    <div id="modal-tutorial" class="modal">
+      <div class="modal-overlay"></div>
+      <div class="modal-sheet modal-sheet-center">
+        <div class="tut-content">
+          <div class="tut-slide active" data-step="0">
+            <div class="tut-icon">📚</div>
+            <h2 class="tut-title">Study Flashcards</h2>
+            <p class="tut-text">Learn Japanese words with flip cards, quizzes, and typing. Earn coins for every correct answer!</p>
+          </div>
+          <div class="tut-slide" data-step="1">
+            <div class="tut-icon">🍙</div>
+            <h2 class="tut-title">Care for Your Pet</h2>
+            <p class="tut-text">Your pet gets hungry and thirsty over time. Use your coins to buy food and drinks to keep them happy!</p>
+          </div>
+          <div class="tut-slide" data-step="2">
+            <div class="tut-icon">🏠</div>
+            <h2 class="tut-title">Decorate & Dress Up</h2>
+            <p class="tut-text">Buy furniture, cute outfits, and unlock room themes. Your progress saves automatically!</p>
+          </div>
+          <div class="tut-dots"><span class="tut-dot active"></span><span class="tut-dot"></span><span class="tut-dot"></span></div>
+          <button class="btn-primary-full" id="btn-tut-next">Next</button>
+        </div>
+      </div>
+    </div>
+
     <!-- Toast -->
     <div id="toast" class="toast"></div>
   </div>
@@ -298,6 +324,7 @@
     </button>
   </nav>
 
+  <script src="js/pet-sprites.js"></script>
   <script src="js/classnotes.js"></script>
   <script src="js/data.js"></script>
   <script src="js/shop.js"></script>

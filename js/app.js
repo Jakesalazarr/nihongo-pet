@@ -62,7 +62,8 @@
       (function(t) {
         var card = document.createElement('button');
         card.className = 'choose-card';
-        card.innerHTML = '<span class="choose-card-emoji">' + t.emoji + '</span><span class="choose-card-name">' + t.nameJa + '</span>';
+        var previewSvg = PET_SPRITES[t.id] || '';
+        card.innerHTML = '<div class="choose-pet-preview">' + previewSvg + '</div><span class="choose-card-name">' + t.name + '<br><small style="color:var(--text-3)">' + t.nameJa + '</small></span>';
         card.addEventListener('click', function() {
           var all = grid.querySelectorAll('.choose-card');
           for (var j = 0; j < all.length; j++) all[j].classList.remove('selected');
@@ -81,7 +82,7 @@
       Economy.earn(50); // starting coins
       Diary.addEntry();
       nav('view-home');
-      toast('Welcome, ' + name + '! 🎉');
+      showTutorial();
     });
 
     el('view-choose').classList.add('active');
@@ -108,32 +109,15 @@
     if (!c || !PetManager.pet) return;
     var p = PetManager.pet;
     var mood = PetManager.getMood();
-    var type = p.type;
+    var svg = PET_SPRITES[p.type] || PET_SPRITES.cat;
 
-    // Build outfit classes
     var outfitClasses = '';
     if (p.equipped.hat) outfitClasses += ' ' + getOutfitClass(p.equipped.hat);
     if (p.equipped.acc) outfitClasses += ' ' + getOutfitClass(p.equipped.acc);
     if (p.equipped.body) outfitClasses += ' ' + getOutfitClass(p.equipped.body);
 
-    c.innerHTML =
-      '<div class="pet pet-' + type + ' mood-' + mood + outfitClasses + '">' +
-        '<div class="pet-body">' +
-          '<div class="pet-ears"><div class="ear ear-l"></div><div class="ear ear-r"></div></div>' +
-          '<div class="pet-head"><div class="pet-face">' +
-            '<div class="eye eye-l"></div><div class="eye eye-r"></div>' +
-            '<div class="mouth"></div>' +
-            '<div class="blush blush-l"></div><div class="blush blush-r"></div>' +
-            '<div class="nose"></div>' +
-          '</div></div>' +
-          '<div class="pet-torso"></div>' +
-          '<div class="pet-arms"><div class="arm arm-l"></div><div class="arm arm-r"></div></div>' +
-          '<div class="pet-feet"><div class="foot foot-l"></div><div class="foot foot-r"></div></div>' +
-          '<div class="pet-tail"></div><div class="pet-extra"></div>' +
-        '</div>' +
-        '<div class="pet-outfit"><div class="outfit-slot outfit-hat"></div><div class="outfit-slot outfit-acc"></div><div class="outfit-slot outfit-body"></div></div>' +
-        '<div class="pet-effects"></div><div class="pet-shadow"></div>' +
-      '</div>';
+    c.innerHTML = '<div class="pet mood-' + mood + outfitClasses + '">' + svg +
+      '<div class="outfit-hat"></div><div class="outfit-acc"></div><div class="outfit-body"></div></div>';
   }
 
   function getOutfitClass(itemId) {
@@ -541,6 +525,33 @@
   function on(nodes, evt, fn) { for (var i = 0; i < nodes.length; i++) nodes[i].addEventListener(evt, fn); }
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   function toast(msg) { var t = el('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, 2500); }
+
+  /* ======== TUTORIAL ======== */
+  function showTutorial() {
+    var step = 0;
+    var slides = document.querySelectorAll('.tut-slide');
+    var dots = document.querySelectorAll('.tut-dot');
+    var btn = el('btn-tut-next');
+    el('modal-tutorial').classList.add('active');
+
+    function goStep() {
+      for (var i = 0; i < slides.length; i++) {
+        slides[i].classList.toggle('active', i === step);
+        dots[i].classList.toggle('active', i === step);
+      }
+      btn.textContent = step >= 2 ? "Let's Start! 🌸" : 'Next';
+    }
+
+    btn.onclick = function() {
+      step++;
+      if (step >= 3) {
+        el('modal-tutorial').classList.remove('active');
+        toast('Welcome! You got 50 coins to start! 🪙');
+        return;
+      }
+      goStep();
+    };
+  }
 
   if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', init); else init();
 })();
