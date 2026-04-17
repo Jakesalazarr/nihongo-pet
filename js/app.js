@@ -1,6 +1,20 @@
 (function() {
   'use strict';
 
+  var APP_VERSION = 'v10';
+
+  // Force cache clear on version mismatch
+  try {
+    if (localStorage.getItem('np_app_version') !== APP_VERSION) {
+      localStorage.setItem('np_app_version', APP_VERSION);
+      if ('caches' in window) {
+        caches.keys().then(function(names) {
+          names.forEach(function(n) { if (n.indexOf('np-') === 0 && n !== 'np-' + APP_VERSION) caches.delete(n); });
+        });
+      }
+    }
+  } catch (e) {}
+
   var state = { view: null, mode: 'flip', deck: [], idx: 0, flipped: false, correct: 0, total: 0, coinsEarned: 0, quizDone: false, typeDone: false, shopTab: 'food', invTab: 'consumables' };
 
   function init() {
