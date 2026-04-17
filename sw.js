@@ -1,6 +1,7 @@
-var CACHE = 'np-v5';
+var CACHE = 'np-v6';
 var ASSETS = ['./', './index.html', './css/style.css', './css/pets.css',
   './sprites/cat.png', './sprites/cat2.png', './sprites/dog.png',
+  './js/firebase-sync.js',
   './js/pet-sprites.js', './js/classnotes.js', './js/data.js', './js/shop.js', './js/srs.js',
   './js/pet.js', './js/economy.js', './js/inventory.js', './js/room.js',
   './js/achievements.js', './js/diary.js', './js/app.js',

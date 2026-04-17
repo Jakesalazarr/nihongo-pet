@@ -7,6 +7,12 @@
     PetManager.load(); Economy.load(); SRS.load(); Inventory.load(); Room.load(); Achievements.load(); Diary.load();
     PetManager.tick();
 
+    // Initialize Firebase cloud sync
+    if (typeof FirebaseSync !== 'undefined') {
+      FirebaseSync.init();
+      wrapSavesForCloudSync();
+    }
+
     if (!PetManager.exists()) {
       setTimeout(function() { el('splash').classList.remove('active'); showChoose(); }, 1200);
     } else {
@@ -15,6 +21,19 @@
 
     bindNav(); bindStudy(); bindShop(); bindInventory();
     el('btn-reset').addEventListener('click', resetPet);
+    el('btn-cloud').addEventListener('click', function() {
+      if (typeof FirebaseSync === 'undefined' || !FirebaseSync.initialized) {
+        toast('Cloud sync not available');
+        return;
+      }
+      if (FirebaseSync.user) {
+        if (confirm('Sign out of cloud sync? Your progress stays on this device.')) {
+          FirebaseSync.signOut();
+        }
+      } else {
+        FirebaseSync.signIn();
+      }
+    });
 
     // Pet stat decay every 60s
     setInterval(function() { PetManager.tick(); if (state.view === 'view-home') updateHome(); }, 60000);
@@ -105,6 +124,51 @@
     if (!_speechTimer) updatePetSpeech();
 
     renderPet('pet-home');
+    renderRoomFurniture();
+    applyRoomTheme();
+  }
+
+  function renderRoomFurniture() {
+    var slots = el('room-slots');
+    if (!slots) return;
+    slots.innerHTML = '';
+    var placed = Room.getPlaced();
+    if (!placed || !placed.length) return;
+
+    // Predefined positions per slot type (multiple positions for variety)
+    var slotPositions = {
+      floor:  [{ left: '12%', bottom: '10%' }, { right: '12%', bottom: '10%' }, { left: '38%', bottom: '8%' }],
+      wall:   [{ left: '10%', top: '14%' }, { right: '10%', top: '14%' }],
+      shelf:  [{ left: '50%', top: '20%', transform: 'translateX(-50%)' }, { right: '18%', top: '40%' }],
+      center: [{ left: '50%', bottom: '12%', transform: 'translateX(-50%)' }]
+    };
+    var used = {};
+
+    placed.forEach(function(p) {
+      var item = getShopItem(p.id);
+      if (!item) return;
+      var slotType = item.slot || 'floor';
+      var positions = slotPositions[slotType] || slotPositions.floor;
+      var idx = used[slotType] || 0;
+      var pos = positions[idx % positions.length];
+      used[slotType] = idx + 1;
+
+      var div = document.createElement('div');
+      div.className = 'room-furniture rf-' + slotType;
+      div.textContent = item.emoji;
+      div.title = item.name;
+      Object.keys(pos).forEach(function(k) { div.style[k] = pos[k]; });
+      slots.appendChild(div);
+    });
+  }
+
+  function applyRoomTheme() {
+    var bg = el('room-bg');
+    if (!bg) return;
+    var theme = Room.getTheme();
+    if (theme && theme.colors) {
+      bg.style.background = 'linear-gradient(180deg,' + theme.colors.wall + ' 0%,' + theme.colors.wall + ' 55%,' + theme.colors.floor + ' 55%,' + theme.colors.floor + ' 100%)';
+    }
   }
 
   function updateStatBar(id, val, fillClass) {
@@ -498,6 +562,7 @@
 
   /* ======== PROFILE / MORE ======== */
   function renderMore() {
+    if (typeof FirebaseSync !== 'undefined') FirebaseSync.updateUI();
     if (!PetManager.pet) return;
     var p = PetManager.pet;
     var ts = SRS.todayStats();
@@ -595,10 +660,22 @@
   /* ======== RESET ======== */
   function resetPet() {
     if (!confirm('Reset everything? Your pet and all progress will be lost!')) return;
-    ['np_pet','np_econ','np_srs','np_stats','np_inv','np_room','np_ach','np_diary'].forEach(function(k) {
-      localStorage.removeItem(k);
-    });
-    location.reload();
+
+    var doLocalReset = function() {
+      ['np_pet','np_econ','np_srs','np_stats','np_inv','np_room','np_ach','np_diary','np_last_local_save'].forEach(function(k) {
+        localStorage.removeItem(k);
+      });
+      location.reload();
+    };
+
+    // If signed in to Firebase, clear cloud data first to prevent restore on reload
+    if (typeof FirebaseSync !== 'undefined' && FirebaseSync.user && FirebaseSync.db) {
+      FirebaseSync.db.collection('users').doc(FirebaseSync.user.uid).delete()
+        .then(doLocalReset)
+        .catch(function(err) { console.error('Cloud reset failed:', err); doLocalReset(); });
+    } else {
+      doLocalReset();
+    }
   }
 
   /* ======== TUTORIAL ======== */

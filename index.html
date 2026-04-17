@@ -233,6 +233,14 @@
         <div class="achievements-grid" id="achievements-grid"></div>
         <h3 class="section-title">Pet Diary</h3>
         <div class="diary-list" id="diary-list"></div>
+
+        <h3 class="section-title">Cloud Save</h3>
+        <button class="btn-cloud" id="btn-cloud">
+          <div>☁️ Sign in with Google</div>
+          <div class="cloud-sub">Save progress to the cloud & sync across devices</div>
+        </button>
+        <div id="cloud-status" class="cloud-status"></div>
+
         <div style="margin-top:24px">
           <button class="btn-reset" id="btn-reset">Reset Pet & Start Over</button>
         </div>
@@ -330,6 +338,10 @@
     </button>
   </nav>
 
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-auth-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.11.0/firebase-firestore-compat.js"></script>
+  <script src="js/firebase-sync.js"></script>
   <script src="js/pet-sprites.js"></script>
   <script src="js/classnotes.js"></script>
   <script src="js/data.js"></script>
