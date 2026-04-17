@@ -31,7 +31,6 @@ var PetManager = {
       hunger: 100,
       thirst: 100,
       happiness: 100,
-      cleanliness: 80,
       lastTick: Date.now(),
       level: 1,
       totalXP: 0,
@@ -47,23 +46,36 @@ var PetManager = {
     var hours = (now - this.pet.lastTick) / 3600000;
     if (hours < 0.01) return;
 
+    // Different decay rates create natural variety in needs
     this.pet.hunger = Math.max(0, Math.round(this.pet.hunger - 3 * hours));
-    this.pet.thirst = Math.max(0, Math.round(this.pet.thirst - 4 * hours));
+    this.pet.thirst = Math.max(0, Math.round(this.pet.thirst - 5 * hours));
     this.pet.happiness = Math.max(0, Math.round(this.pet.happiness - 2 * hours));
-    this.pet.cleanliness = Math.max(0, Math.round(this.pet.cleanliness - 1 * hours));
     this.pet.lastTick = now;
     this.save();
   },
 
   getMood: function() {
     if (!this.pet) return 'happy';
-    var avg = (this.pet.hunger + this.pet.thirst + this.pet.happiness + this.pet.cleanliness) / 4;
+    var need = this.getUrgentNeed();
+    if (need && need.val < 15) return 'sad';
+    if (need && need.val < 35) return 'hungry';
+    var avg = (this.pet.hunger + this.pet.thirst + this.pet.happiness) / 3;
     if (avg >= 85) return 'ecstatic';
-    if (avg >= 60) return 'happy';
-    if (avg >= 40) return 'neutral';
-    if (this.pet.hunger < 20 || this.pet.thirst < 20) return 'hungry';
-    if (avg < 25) return 'sad';
-    return 'neutral';
+    if (avg >= 55) return 'happy';
+    if (avg >= 35) return 'neutral';
+    return 'hungry';
+  },
+
+  getUrgentNeed: function() {
+    if (!this.pet) return null;
+    var needs = [
+      { stat: 'hunger', val: this.pet.hunger, label: 'food' },
+      { stat: 'thirst', val: this.pet.thirst, label: 'water' },
+      { stat: 'happiness', val: this.pet.happiness, label: 'play' }
+    ];
+    needs.sort(function(a, b) { return a.val - b.val; });
+    if (needs[0].val < 50) return needs[0];
+    return null;
   },
 
   feed: function(stat, amount) {
@@ -71,7 +83,6 @@ var PetManager = {
     if (stat === 'hunger') this.pet.hunger = Math.min(100, this.pet.hunger + amount);
     else if (stat === 'thirst') this.pet.thirst = Math.min(100, this.pet.thirst + amount);
     else if (stat === 'happiness') this.pet.happiness = Math.min(100, this.pet.happiness + amount);
-    else if (stat === 'cleanliness') this.pet.cleanliness = Math.min(100, this.pet.cleanliness + amount);
     this.save();
   },
 

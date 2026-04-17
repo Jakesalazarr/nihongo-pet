@@ -14,6 +14,7 @@
     }
 
     bindNav(); bindStudy(); bindShop(); bindInventory();
+    el('btn-reset').addEventListener('click', resetPet);
 
     // Pet stat decay every 60s
     setInterval(function() { PetManager.tick(); if (state.view === 'view-home') updateHome(); }, 60000);
@@ -95,12 +96,31 @@
     el('pet-level-badge').textContent = 'Lv.' + p.level;
     el('coin-amount').textContent = Economy.getCoins();
 
-    el('stat-hunger').style.width = p.hunger + '%';
-    el('stat-thirst').style.width = p.thirst + '%';
-    el('stat-happy').style.width = p.happiness + '%';
-    el('stat-clean').style.width = p.cleanliness + '%';
+    // Update stat bars with colors based on level
+    updateStatBar('stat-hunger', p.hunger, 'fill-food');
+    updateStatBar('stat-thirst', p.thirst, 'fill-water');
+    updateStatBar('stat-happy', p.happiness, 'fill-happy');
+
+    // Pet speech bubble — AI picks what to say
+    var need = PetManager.getUrgentNeed();
+    var speech = getPetSpeech(p.type, need);
+    var speechEl = el('pet-speech');
+    if (speech) {
+      var urgent = need && need.val < 20;
+      speechEl.innerHTML = '<span class="pet-speech-bubble' + (urgent ? ' urgent' : '') + '">' + esc(speech) + '</span>';
+    } else {
+      speechEl.innerHTML = '';
+    }
 
     renderPet('pet-home');
+  }
+
+  function updateStatBar(id, val, fillClass) {
+    var bar = el(id);
+    bar.style.width = val + '%';
+    bar.className = 'stat-row-fill ' + fillClass + (val < 30 ? ' low' : '');
+    var pctEl = el(id + '-pct');
+    if (pctEl) pctEl.textContent = val + '%';
   }
 
   function renderPet(containerId) {
@@ -538,6 +558,15 @@
   function on(nodes, evt, fn) { for (var i = 0; i < nodes.length; i++) nodes[i].addEventListener(evt, fn); }
   function esc(s) { var d = document.createElement('div'); d.textContent = s; return d.innerHTML; }
   function toast(msg) { var t = el('toast'); t.textContent = msg; t.classList.add('show'); setTimeout(function() { t.classList.remove('show'); }, 2500); }
+
+  /* ======== RESET ======== */
+  function resetPet() {
+    if (!confirm('Reset everything? Your pet and all progress will be lost!')) return;
+    ['np_pet','np_econ','np_srs','np_stats','np_inv','np_room','np_ach','np_diary'].forEach(function(k) {
+      localStorage.removeItem(k);
+    });
+    location.reload();
+  }
 
   /* ======== TUTORIAL ======== */
   function showTutorial() {

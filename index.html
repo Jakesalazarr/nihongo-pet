@@ -50,24 +50,27 @@
         <div class="pet-level-badge" id="pet-level-badge">Lv.1</div>
       </header>
 
-      <div class="stats-bar" id="stats-bar">
-        <div class="stat-mini" title="Hunger">
-          <span class="stat-mini-icon">🍙</span>
-          <div class="stat-mini-bar"><div class="stat-mini-fill" id="stat-hunger" style="width:100%"></div></div>
+      <div class="stats-panel" id="stats-panel">
+        <div class="stat-row">
+          <span class="stat-row-icon">🍙</span>
+          <span class="stat-row-label">Food</span>
+          <div class="stat-row-track"><div class="stat-row-fill fill-food" id="stat-hunger" style="width:100%"></div></div>
+          <span class="stat-row-pct" id="stat-hunger-pct">100%</span>
         </div>
-        <div class="stat-mini" title="Thirst">
-          <span class="stat-mini-icon">💧</span>
-          <div class="stat-mini-bar"><div class="stat-mini-fill stat-fill-blue" id="stat-thirst" style="width:100%"></div></div>
+        <div class="stat-row">
+          <span class="stat-row-icon">💧</span>
+          <span class="stat-row-label">Water</span>
+          <div class="stat-row-track"><div class="stat-row-fill fill-water" id="stat-thirst" style="width:100%"></div></div>
+          <span class="stat-row-pct" id="stat-thirst-pct">100%</span>
         </div>
-        <div class="stat-mini" title="Happiness">
-          <span class="stat-mini-icon">💖</span>
-          <div class="stat-mini-bar"><div class="stat-mini-fill stat-fill-pink" id="stat-happy" style="width:100%"></div></div>
-        </div>
-        <div class="stat-mini" title="Clean">
-          <span class="stat-mini-icon">✨</span>
-          <div class="stat-mini-bar"><div class="stat-mini-fill stat-fill-mint" id="stat-clean" style="width:100%"></div></div>
+        <div class="stat-row">
+          <span class="stat-row-icon">💖</span>
+          <span class="stat-row-label">Happy</span>
+          <div class="stat-row-track"><div class="stat-row-fill fill-happy" id="stat-happy" style="width:100%"></div></div>
+          <span class="stat-row-pct" id="stat-happy-pct">100%</span>
         </div>
       </div>
+      <div class="pet-speech" id="pet-speech"></div>
 
       <div class="room" id="room">
         <div class="room-bg" id="room-bg"></div>
@@ -230,6 +233,9 @@
         <div class="achievements-grid" id="achievements-grid"></div>
         <h3 class="section-title">Pet Diary</h3>
         <div class="diary-list" id="diary-list"></div>
+        <div style="margin-top:24px">
+          <button class="btn-reset" id="btn-reset">Reset Pet & Start Over</button>
+        </div>
       </main>
     </div>
 

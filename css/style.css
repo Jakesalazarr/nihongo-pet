@@ -61,14 +61,26 @@ input{font-family:inherit;font-size:inherit}
 .pet-name-display{font-size:18px;font-weight:700;color:var(--primary-dark)}
 .pet-level-badge{background:var(--lavender);color:#5B21B6;padding:3px 10px;border-radius:12px;font-size:12px;font-weight:700}
 
-.stats-bar{display:flex;gap:6px;padding:0 16px 8px}
-.stat-mini{flex:1;display:flex;align-items:center;gap:4px}
-.stat-mini-icon{font-size:14px}
-.stat-mini-bar{flex:1;height:6px;background:var(--border);border-radius:3px;overflow:hidden}
-.stat-mini-fill{height:100%;background:var(--peach);border-radius:3px;transition:width 0.5s ease}
-.stat-fill-blue{background:var(--blue)}
-.stat-fill-pink{background:var(--pink)}
-.stat-fill-mint{background:var(--mint)}
+.stats-panel{display:flex;flex-direction:column;gap:6px;padding:0 16px 6px;background:var(--bg)}
+.stat-row{display:flex;align-items:center;gap:8px}
+.stat-row-icon{font-size:16px;width:22px;text-align:center}
+.stat-row-label{font-size:12px;font-weight:700;color:var(--text-2);width:42px}
+.stat-row-track{flex:1;height:10px;background:var(--border);border-radius:5px;overflow:hidden}
+.stat-row-fill{height:100%;border-radius:5px;transition:width 0.5s ease}
+.stat-row-pct{font-size:11px;font-weight:700;color:var(--text-2);width:32px;text-align:right}
+.fill-food{background:linear-gradient(90deg,#FBBF24,#F59E0B)}
+.fill-water{background:linear-gradient(90deg,#60A5FA,#3B82F6)}
+.fill-happy{background:linear-gradient(90deg,#F9A8D4,#EC4899)}
+.fill-food.low{background:linear-gradient(90deg,#FB923C,#EA580C)}
+.fill-water.low{background:linear-gradient(90deg,#FB7185,#E11D48)}
+.fill-happy.low{background:linear-gradient(90deg,#FCA5A5,#EF4444)}
+.pet-speech{text-align:center;padding:0 16px 4px;min-height:24px}
+.pet-speech-bubble{display:inline-block;background:var(--bg-card);border:2px solid var(--primary-light);border-radius:16px;padding:6px 16px;font-size:13px;font-weight:600;color:var(--text);box-shadow:var(--shadow);animation:speechBounce 0.4s ease}
+.pet-speech-bubble.urgent{border-color:var(--red);animation:speechShake 0.5s ease}
+@keyframes speechBounce{0%{transform:scale(0.8);opacity:0}100%{transform:scale(1);opacity:1}}
+@keyframes speechShake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-4px)}40%,80%{transform:translateX(4px)}}
+.btn-reset{width:100%;padding:14px;border-radius:var(--radius-sm);background:var(--border);color:var(--red);font-size:14px;font-weight:600;transition:transform 0.15s}
+.btn-reset:active{transform:scale(0.97)}
 
 .room{position:relative;height:220px;margin:0 16px;border-radius:var(--radius);overflow:hidden;background:linear-gradient(180deg,#FFF0F5 0%,#FFEEF2 60%,#FFE4EC 100%);box-shadow:var(--shadow) inset}
 .room-bg{position:absolute;inset:0}

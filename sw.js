@@ -1,4 +1,4 @@
-var CACHE = 'np-v3';
+var CACHE = 'np-v4';
 var ASSETS = ['./', './index.html', './css/style.css', './css/pets.css',
   './sprites/cat.png', './sprites/cat2.png', './sprites/dog.png',
   './js/pet-sprites.js', './js/classnotes.js', './js/data.js', './js/shop.js', './js/srs.js',
