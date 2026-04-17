@@ -48,17 +48,10 @@
     var signedIn = (typeof FirebaseSync !== 'undefined' && FirebaseSync.user);
 
     if (!loginDone && !signedIn) {
-      // First-time user — show login screen
       nav('view-login');
       return;
     }
-    // Returning user — go to appropriate screen
-    if (PetManager.exists()) {
-      nav('view-home');
-      checkDaily();
-    } else {
-      showChoose();
-    }
+    afterLoginNext();
   }
 
   function bindLogin() {
@@ -75,15 +68,7 @@
         if (FirebaseSync.user) {
           clearInterval(poll);
           localStorage.setItem('np_login_done', '1');
-          // Give cloud a moment to load/reload
-          setTimeout(function() {
-            if (PetManager.exists()) {
-              nav('view-home');
-              checkDaily();
-            } else {
-              showChoose();
-            }
-          }, 600);
+          setTimeout(afterLoginNext, 600);
         } else if (tries > 60) { // 30s timeout
           clearInterval(poll);
         }
@@ -92,13 +77,62 @@
 
     el('btn-login-skip').addEventListener('click', function() {
       localStorage.setItem('np_login_done', '1');
-      if (PetManager.exists()) {
-        nav('view-home');
-        checkDaily();
-      } else {
-        showChoose();
-      }
+      afterLoginNext();
     });
+
+    // Tutorial view bindings
+    el('btn-tut-next-view').addEventListener('click', advanceTutorialView);
+    el('btn-tut-skip-view').addEventListener('click', function() {
+      localStorage.setItem('np_tutorial_done', '1');
+      showChoose();
+    });
+  }
+
+  function afterLoginNext() {
+    if (PetManager.exists()) {
+      nav('view-home'); checkDaily();
+    } else if (!localStorage.getItem('np_tutorial_done')) {
+      showTutorialView();
+    } else {
+      showChoose();
+    }
+  }
+
+  function showTutorialView() {
+    var step = 0;
+    var slides = document.querySelectorAll('.tutview-slide');
+    var bars = document.querySelectorAll('.tutview-bar');
+
+    function paint() {
+      for (var i = 0; i < slides.length; i++) {
+        slides[i].classList.toggle('active', i === step);
+        bars[i].classList.toggle('active', i === step);
+      }
+      el('btn-tut-next-view').textContent = step >= 2 ? 'Choose My Pet! 🌸' : 'Next →';
+    }
+
+    window._tutStep = 0;
+    step = 0;
+    paint();
+    nav('view-tutorial');
+  }
+
+  function advanceTutorialView() {
+    var slides = document.querySelectorAll('.tutview-slide');
+    var bars = document.querySelectorAll('.tutview-bar');
+    var current = 0;
+    for (var i = 0; i < slides.length; i++) if (slides[i].classList.contains('active')) current = i;
+    current++;
+    if (current >= slides.length) {
+      localStorage.setItem('np_tutorial_done', '1');
+      showChoose();
+      return;
+    }
+    for (var i = 0; i < slides.length; i++) {
+      slides[i].classList.toggle('active', i === current);
+      bars[i].classList.toggle('active', i === current);
+    }
+    el('btn-tut-next-view').textContent = current >= 2 ? 'Choose My Pet! 🌸' : 'Next →';
   }
 
   /* ======== NAV ======== */
@@ -161,7 +195,7 @@
       Economy.earn(50); // starting coins
       Diary.addEntry();
       nav('view-home');
-      showTutorial();
+      toast('Welcome, ' + name + '! 🎉 +50¥ starter bonus');
     });
 
     el('view-choose').classList.add('active');
@@ -182,6 +216,9 @@
 
     // Pet speech — only update if no active reaction bubble
     if (!_speechTimer) updatePetSpeech();
+
+    // Update auth pill
+    updateAuthPill();
 
     renderPet('pet-home');
     renderRoomFurniture();
@@ -229,6 +266,21 @@
     if (theme && theme.colors) {
       bg.style.background = 'linear-gradient(180deg,' + theme.colors.wall + ' 0%,' + theme.colors.wall + ' 55%,' + theme.colors.floor + ' 55%,' + theme.colors.floor + ' 100%)';
     }
+  }
+
+  function updateAuthPill() {
+    var pill = el('home-auth-pill');
+    if (!pill) return;
+    var signedIn = typeof FirebaseSync !== 'undefined' && FirebaseSync.user;
+    if (signedIn) {
+      var name = FirebaseSync.user.displayName || FirebaseSync.user.email.split('@')[0];
+      pill.textContent = '☁️ Synced as ' + name;
+      pill.className = 'home-auth-pill signed-in';
+    } else {
+      pill.textContent = '☁️ Not signed in · Tap to login';
+      pill.className = 'home-auth-pill signed-out';
+    }
+    pill.onclick = function() { nav('view-more'); };
   }
 
   function updateStatBar(id, val, fillClass) {
@@ -421,7 +473,17 @@
     state.total++; if (ok) state.correct++; state.coinsEarned += coins;
     PetManager.addXP(ok ? 10 : 2);
     el('card').classList.add(ok ? 'swipe-right' : 'swipe-left');
+    if (coins > 0) showYenFloat(coins);
     setTimeout(function() { state.idx++; showCard(); }, 350);
+  }
+
+  function showYenFloat(amount) {
+    var area = document.querySelector('.study-area') || document.body;
+    var float = document.createElement('div');
+    float.className = 'coin-float';
+    float.textContent = '+' + amount + ' ¥';
+    area.appendChild(float);
+    setTimeout(function() { float.remove(); }, 1200);
   }
 
   function showQuiz(w) {
@@ -460,6 +522,7 @@
     var coins = Economy.earnFromStudy(ok ? 3 : 1);
     state.total++; if (isOk) state.correct++; state.coinsEarned += coins;
     PetManager.addXP(isOk ? 10 : 2);
+    if (coins > 0) showYenFloat(coins);
     el('btn-quiz-next').style.display = 'block';
   }
 
@@ -480,6 +543,7 @@
     var coins = Economy.earnFromStudy(ok ? 3 : 1);
     state.total++; if (isOk) state.correct++; state.coinsEarned += coins;
     PetManager.addXP(isOk ? 10 : 2);
+    if (coins > 0) showYenFloat(coins);
     el('tp-answer').innerHTML = '<span class="answer-kanji">' + esc(w.kanji) + '</span><span class="answer-reading">' + esc(w.hiragana) + '</span><span class="answer-romaji">' + esc(w.romaji) + '</span>';
     el('tp-result').style.display = 'block'; speak(w.hiragana);
   }
