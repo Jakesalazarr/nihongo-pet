@@ -1,0 +1,313 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+  <meta name="theme-color" content="#FFB7C5">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <title>Nihongo Pet</title>
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" href="icons/icon.svg" type="image/svg+xml">
+  <link href="https://fonts.googleapis.com/css2?family=M+PLUS+Rounded+1c:wght@400;500;700;800&family=Noto+Sans+JP:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/pets.css">
+</head>
+<body>
+  <div id="app">
+
+    <!-- Splash -->
+    <div id="splash" class="view active">
+      <div class="splash-content">
+        <div class="splash-paw">🐾</div>
+        <h1 class="splash-title">Nihongo Pet</h1>
+        <p class="splash-sub">Learn Japanese with your cute companion!</p>
+        <div class="splash-dots"><span class="dot"></span><span class="dot"></span><span class="dot"></span></div>
+      </div>
+    </div>
+
+    <!-- Pet Selection (first run) -->
+    <div id="view-choose" class="view">
+      <div class="choose-content">
+        <h1 class="choose-title">Choose Your Pet!</h1>
+        <p class="choose-sub">Pick a friend to study with</p>
+        <div class="choose-grid" id="choose-grid"></div>
+        <div class="choose-name-section" id="choose-name-section" style="display:none">
+          <label class="choose-label">Name your pet:</label>
+          <input type="text" id="pet-name-input" class="choose-input" placeholder="e.g. Mochi" maxlength="12" autocomplete="off">
+          <button class="btn-start" id="btn-start">Let's Go! 🎉</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Home / Pet Room -->
+    <div id="view-home" class="view">
+      <header class="home-header">
+        <div class="coin-display">
+          <span class="coin-icon">🪙</span>
+          <span class="coin-amount" id="coin-amount">0</span>
+        </div>
+        <h1 class="pet-name-display" id="pet-name-display">Pet</h1>
+        <div class="pet-level-badge" id="pet-level-badge">Lv.1</div>
+      </header>
+
+      <div class="stats-bar" id="stats-bar">
+        <div class="stat-mini" title="Hunger">
+          <span class="stat-mini-icon">🍙</span>
+          <div class="stat-mini-bar"><div class="stat-mini-fill" id="stat-hunger" style="width:100%"></div></div>
+        </div>
+        <div class="stat-mini" title="Thirst">
+          <span class="stat-mini-icon">💧</span>
+          <div class="stat-mini-bar"><div class="stat-mini-fill stat-fill-blue" id="stat-thirst" style="width:100%"></div></div>
+        </div>
+        <div class="stat-mini" title="Happiness">
+          <span class="stat-mini-icon">💖</span>
+          <div class="stat-mini-bar"><div class="stat-mini-fill stat-fill-pink" id="stat-happy" style="width:100%"></div></div>
+        </div>
+        <div class="stat-mini" title="Clean">
+          <span class="stat-mini-icon">✨</span>
+          <div class="stat-mini-bar"><div class="stat-mini-fill stat-fill-mint" id="stat-clean" style="width:100%"></div></div>
+        </div>
+      </div>
+
+      <div class="room" id="room">
+        <div class="room-bg" id="room-bg"></div>
+        <div class="room-slots" id="room-slots"></div>
+        <div class="pet-container" id="pet-home"></div>
+      </div>
+
+      <div class="home-actions">
+        <button class="home-btn home-btn-study" id="btn-home-study">
+          <span class="home-btn-icon">📚</span>
+          <span>Study</span>
+        </button>
+        <button class="home-btn home-btn-feed" id="btn-home-feed">
+          <span class="home-btn-icon">🍙</span>
+          <span>Feed</span>
+        </button>
+        <button class="home-btn home-btn-play" id="btn-home-play">
+          <span class="home-btn-icon">🎯</span>
+          <span>Quiz</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Chapters -->
+    <div id="view-chapters" class="view">
+      <header class="app-header">
+        <h1 class="app-title">Study</h1>
+      </header>
+      <main class="view-content" id="chapters-list"></main>
+    </div>
+
+    <!-- Study Session -->
+    <div id="view-study" class="view">
+      <header class="study-header">
+        <button class="btn-icon-only" id="btn-study-back"><span>←</span></button>
+        <div class="mode-switch" id="mode-switch">
+          <button class="mode-btn active" data-mode="flip">Flip</button>
+          <button class="mode-btn" data-mode="quiz">Quiz</button>
+          <button class="mode-btn" data-mode="type">Type</button>
+        </div>
+        <span class="counter" id="counter">1/20</span>
+      </header>
+      <main class="study-area">
+        <div class="study-pet-mini" id="study-pet-mini"></div>
+
+        <div id="mode-flip" class="mode-panel active">
+          <div class="card-wrapper" id="card-wrapper">
+            <div class="card" id="card">
+              <div class="card-face card-front">
+                <span class="card-big-emoji" id="cf-emoji"></span>
+                <span class="card-main-text" id="cf-meaning"></span>
+                <span class="card-hint">tap to reveal</span>
+              </div>
+              <div class="card-face card-back">
+                <span class="card-big-emoji" id="cb-emoji"></span>
+                <div class="card-jp">
+                  <span class="card-kanji" id="cb-kanji"></span>
+                  <span class="card-reading" id="cb-reading"></span>
+                  <span class="card-romaji" id="cb-romaji"></span>
+                </div>
+                <div class="card-divider"></div>
+                <div class="card-sentence">
+                  <p class="sent-ja" id="cb-sja"></p>
+                  <p class="sent-ro" id="cb-sro"></p>
+                  <p class="sent-en" id="cb-sen"></p>
+                </div>
+                <button class="btn-listen" id="btn-listen">🔊 Listen</button>
+              </div>
+            </div>
+          </div>
+          <div class="rating-bar" id="rating-bar" style="display:none">
+            <button class="rate-btn rate-again" data-rate="1">Again</button>
+            <button class="rate-btn rate-hard" data-rate="2">Hard</button>
+            <button class="rate-btn rate-good" data-rate="3">Good</button>
+            <button class="rate-btn rate-easy" data-rate="4">Easy</button>
+          </div>
+        </div>
+
+        <div id="mode-quiz" class="mode-panel">
+          <div class="quiz-prompt-card">
+            <span class="quiz-emoji" id="qz-emoji"></span>
+            <span class="quiz-word" id="qz-word"></span>
+            <span class="quiz-sub" id="qz-sub"></span>
+          </div>
+          <div class="quiz-options" id="qz-options"></div>
+          <button class="btn-next" id="btn-quiz-next" style="display:none">Next →</button>
+        </div>
+
+        <div id="mode-type" class="mode-panel">
+          <div class="type-prompt-card">
+            <span class="type-emoji" id="tp-emoji"></span>
+            <span class="type-word" id="tp-word"></span>
+          </div>
+          <div class="type-input-area">
+            <input type="text" id="tp-input" class="type-field" placeholder="Type the romaji..." autocomplete="off" autocapitalize="off" spellcheck="false">
+            <button class="btn-submit" id="btn-submit">Check</button>
+          </div>
+          <div class="type-result" id="tp-result" style="display:none">
+            <div class="type-answer-display" id="tp-answer"></div>
+            <button class="btn-next" id="btn-type-next">Next →</button>
+          </div>
+        </div>
+
+        <div class="study-progress-bar">
+          <div class="study-progress-track">
+            <div class="study-progress-fill" id="study-prog-fill" style="width:0%"></div>
+          </div>
+        </div>
+      </main>
+    </div>
+
+    <!-- Shop -->
+    <div id="view-shop" class="view">
+      <header class="app-header">
+        <h1 class="app-title">Shop</h1>
+        <div class="coin-display coin-display-sm">
+          <span class="coin-icon">🪙</span>
+          <span class="coin-amount" id="shop-coins">0</span>
+        </div>
+      </header>
+      <div class="shop-tabs" id="shop-tabs">
+        <button class="shop-tab active" data-tab="food">🍙 Food</button>
+        <button class="shop-tab" data-tab="drinks">💧 Drinks</button>
+        <button class="shop-tab" data-tab="furniture">🪑 Decor</button>
+        <button class="shop-tab" data-tab="outfits">👒 Outfits</button>
+      </div>
+      <main class="view-content">
+        <div class="shop-grid" id="shop-grid"></div>
+      </main>
+    </div>
+
+    <!-- Inventory -->
+    <div id="view-inventory" class="view">
+      <header class="app-header">
+        <h1 class="app-title">My Items</h1>
+      </header>
+      <main class="view-content">
+        <div class="inv-tabs" id="inv-tabs">
+          <button class="inv-tab active" data-tab="consumables">Food & Drinks</button>
+          <button class="inv-tab" data-tab="furniture">Furniture</button>
+          <button class="inv-tab" data-tab="outfits">Outfits</button>
+        </div>
+        <div class="inv-grid" id="inv-grid"></div>
+        <div class="inv-empty" id="inv-empty" style="display:none">
+          <span>🛒</span>
+          <p>Nothing here yet! Visit the shop.</p>
+        </div>
+      </main>
+    </div>
+
+    <!-- Progress / More -->
+    <div id="view-more" class="view">
+      <header class="app-header">
+        <h1 class="app-title">Profile</h1>
+      </header>
+      <main class="view-content">
+        <div class="profile-card" id="profile-card"></div>
+        <div class="profile-stats" id="profile-stats"></div>
+        <h3 class="section-title">Achievements</h3>
+        <div class="achievements-grid" id="achievements-grid"></div>
+        <h3 class="section-title">Pet Diary</h3>
+        <div class="diary-list" id="diary-list"></div>
+      </main>
+    </div>
+
+    <!-- Feed Modal -->
+    <div id="modal-feed" class="modal">
+      <div class="modal-overlay" data-close="modal-feed"></div>
+      <div class="modal-sheet">
+        <div class="modal-handle"></div>
+        <h2 class="modal-title">Feed Your Pet</h2>
+        <div class="feed-grid" id="feed-grid"></div>
+      </div>
+    </div>
+
+    <!-- Session Complete -->
+    <div id="modal-complete" class="modal">
+      <div class="modal-overlay"></div>
+      <div class="modal-sheet modal-sheet-center">
+        <div class="complete-content">
+          <div class="complete-icon">🎉</div>
+          <h2 class="complete-title">Session Complete!</h2>
+          <div class="complete-stats">
+            <div class="cs-item"><span class="cs-val" id="cs-correct">0</span><span class="cs-lbl">Correct</span></div>
+            <div class="cs-item"><span class="cs-val" id="cs-total">0</span><span class="cs-lbl">Total</span></div>
+            <div class="cs-item"><span class="cs-val" id="cs-acc">0%</span><span class="cs-lbl">Accuracy</span></div>
+          </div>
+          <div class="complete-coins" id="cs-coins">+0 🪙</div>
+          <button class="btn-primary-full" id="btn-session-done">Continue</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Daily Bonus -->
+    <div id="modal-daily" class="modal">
+      <div class="modal-overlay"></div>
+      <div class="modal-sheet modal-sheet-center">
+        <div class="complete-content">
+          <div class="complete-icon">🌸</div>
+          <h2 class="complete-title">Welcome Back!</h2>
+          <p class="daily-streak" id="daily-streak">Day 1 streak!</p>
+          <div class="complete-coins" id="daily-coins">+20 🪙</div>
+          <button class="btn-primary-full" id="btn-daily-claim">Claim!</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Toast -->
+    <div id="toast" class="toast"></div>
+  </div>
+
+  <!-- Bottom Nav -->
+  <nav id="nav" class="bottom-nav">
+    <button class="nav-btn active" data-view="view-home">
+      <span class="nav-ico">🏠</span><span class="nav-txt">Home</span>
+    </button>
+    <button class="nav-btn" data-view="view-chapters">
+      <span class="nav-ico">📚</span><span class="nav-txt">Study</span>
+    </button>
+    <button class="nav-btn" data-view="view-shop">
+      <span class="nav-ico">🛍️</span><span class="nav-txt">Shop</span>
+    </button>
+    <button class="nav-btn" data-view="view-inventory">
+      <span class="nav-ico">🎒</span><span class="nav-txt">Bag</span>
+    </button>
+    <button class="nav-btn" data-view="view-more">
+      <span class="nav-ico">⭐</span><span class="nav-txt">More</span>
+    </button>
+  </nav>
+
+  <script src="js/classnotes.js"></script>
+  <script src="js/data.js"></script>
+  <script src="js/shop.js"></script>
+  <script src="js/srs.js"></script>
+  <script src="js/pet.js"></script>
+  <script src="js/economy.js"></script>
+  <script src="js/inventory.js"></script>
+  <script src="js/room.js"></script>
+  <script src="js/achievements.js"></script>
+  <script src="js/diary.js"></script>
+  <script src="js/app.js"></script>
+</body>
+</html>

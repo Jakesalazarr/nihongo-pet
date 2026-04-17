@@ -1,0 +1,12 @@
+{
+  "name": "Nihongo Pet",
+  "short_name": "Nihongo Pet",
+  "description": "Learn Japanese with your cute virtual pet companion!",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFF5F7",
+  "theme_color": "#FFB7C5",
+  "orientation": "portrait",
+  "icons": [{ "src": "icons/icon.svg", "sizes": "any", "type": "image/svg+xml" }]
+}

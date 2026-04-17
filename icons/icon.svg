@@ -1,0 +1,15 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+  <rect width="512" height="512" rx="96" fill="#FFB7C5"/>
+  <circle cx="256" cy="280" r="100" fill="#FFF0F5"/>
+  <circle cx="220" cy="260" r="12" fill="#333"/>
+  <circle cx="292" cy="260" r="12" fill="#333"/>
+  <circle cx="224" cy="256" r="4" fill="#fff"/>
+  <circle cx="296" cy="256" r="4" fill="#fff"/>
+  <ellipse cx="200" cy="285" rx="16" ry="10" fill="#FBCFE8" opacity="0.6"/>
+  <ellipse cx="312" cy="285" rx="16" ry="10" fill="#FBCFE8" opacity="0.6"/>
+  <path d="M240 290 Q256 306 272 290" fill="none" stroke="#E879A0" stroke-width="3" stroke-linecap="round"/>
+  <path d="M200 200 L220 240 L180 240 Z" fill="#FFB7C5"/>
+  <path d="M312 200 L332 240 L292 240 Z" fill="#FFB7C5"/>
+  <circle cx="256" cy="275" r="5" fill="#E879A0"/>
+  <text x="256" y="430" font-size="48" text-anchor="middle" fill="#fff" font-family="sans-serif" font-weight="bold">日本語ペット</text>
+</svg>

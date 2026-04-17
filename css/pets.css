@@ -1,0 +1,1544 @@
+/* =============================================================
+   NIHONGO PET  --  Kawaii Virtual Pet CSS
+   All pets rendered with pure CSS (no images).
+   Aesthetic: Sanrio / Sumikko Gurashi -- round, soft, pastel.
+   ============================================================= */
+
+/* ----- Custom Properties / Palette ----- */
+:root {
+  /* Pet base colours */
+  --clr-cat:       #FFB7C5;
+  --clr-cat-dark:  #F19CB0;
+  --clr-cat-light: #FFD6E0;
+
+  --clr-dog:       #FFDAB9;
+  --clr-dog-dark:  #F0C8A0;
+  --clr-dog-light: #FFECD2;
+
+  --clr-bunny:       #E8D5F5;
+  --clr-bunny-dark:  #D4B8E8;
+  --clr-bunny-light: #F3EBFA;
+
+  --clr-hamster:       #FFE4B5;
+  --clr-hamster-dark:  #F0D498;
+  --clr-hamster-light: #FFF2DA;
+
+  --clr-penguin:       #B8D4E3;
+  --clr-penguin-dark:  #97BFD4;
+  --clr-penguin-light: #D6E8F2;
+  --clr-penguin-belly: #FFFFFF;
+  --clr-penguin-beak:  #FFBB5C;
+  --clr-penguin-feet:  #FFBB5C;
+
+  /* Shared */
+  --clr-eye:       #2D2D2D;
+  --clr-eye-hl:    #FFFFFF;
+  --clr-blush:     #FFAEC0;
+  --clr-nose-pink: #F9A8B8;
+  --clr-mouth:     #D48A9A;
+  --clr-whisker:   #CCAAAA;
+  --clr-shadow:    rgba(0,0,0,0.10);
+  --clr-tear:      #90CAF9;
+  --clr-heart:     #FF8FAB;
+
+  /* Sizes */
+  --pet-w: 140px;
+  --pet-h: 180px;
+  --head-size: 70px;
+  --eye-w: 10px;
+  --eye-h: 10px;
+}
+
+/* =============================================================
+   1.  BASE PET CONTAINER
+   ============================================================= */
+
+.pet {
+  position: relative;
+  width: var(--pet-w);
+  height: var(--pet-h);
+  display: flex;
+  align-items: flex-end;
+  justify-content: center;
+  margin: 0 auto;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pet-body {
+  position: relative;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  animation: petFloat 2s ease-in-out infinite;
+  will-change: transform;
+}
+
+/* Shadow beneath pet */
+.pet-shadow {
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 60px;
+  height: 12px;
+  background: var(--clr-shadow);
+  border-radius: 50%;
+  z-index: 0;
+  animation: shadowPulse 2s ease-in-out infinite;
+}
+
+/* =============================================================
+   2A.  SHARED BODY PARTS
+   ============================================================= */
+
+/* -- Head -- */
+.pet-head {
+  position: relative;
+  width: var(--head-size);
+  height: var(--head-size);
+  border-radius: 50%;
+  z-index: 3;
+  flex-shrink: 0;
+}
+
+.pet-face {
+  position: absolute;
+  inset: 0;
+  z-index: 5;
+}
+
+/* -- Eyes -- */
+.eye {
+  position: absolute;
+  top: 42%;
+  width: var(--eye-w);
+  height: var(--eye-h);
+  background: var(--clr-eye);
+  border-radius: 50%;
+  z-index: 6;
+  animation: petBlink 4s ease-in-out infinite;
+}
+
+.eye-l { left: 22%; }
+.eye-r { right: 22%; }
+
+/* Highlight dot */
+.eye::after {
+  content: "";
+  position: absolute;
+  top: 1px;
+  right: 1px;
+  width: 3px;
+  height: 3px;
+  background: var(--clr-eye-hl);
+  border-radius: 50%;
+}
+
+/* -- Nose -- */
+.nose {
+  position: absolute;
+  top: 55%;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 6;
+}
+
+/* -- Mouth -- */
+.mouth {
+  position: absolute;
+  top: 62%;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 5px;
+  border-bottom: 2px solid var(--clr-mouth);
+  border-radius: 0 0 50% 50%;
+  z-index: 6;
+}
+
+/* -- Blush -- */
+.blush {
+  position: absolute;
+  top: 52%;
+  width: 10px;
+  height: 8px;
+  background: var(--clr-blush);
+  border-radius: 50%;
+  opacity: 0.45;
+  z-index: 5;
+}
+.blush-l { left: 8%; }
+.blush-r { right: 8%; }
+
+/* -- Torso -- */
+.pet-torso {
+  position: relative;
+  z-index: 2;
+  margin-top: -8px;
+  flex-shrink: 0;
+}
+
+/* -- Ears container -- */
+.pet-ears {
+  position: absolute;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: var(--head-size);
+  z-index: 4;
+  pointer-events: none;
+}
+
+.ear {
+  position: absolute;
+  z-index: 4;
+}
+
+/* -- Arms -- */
+.pet-arms {
+  position: absolute;
+  width: 100%;
+  z-index: 3;
+  pointer-events: none;
+}
+
+.arm {
+  position: absolute;
+}
+
+/* -- Feet -- */
+.pet-feet {
+  position: relative;
+  display: flex;
+  gap: 6px;
+  z-index: 2;
+  margin-top: -2px;
+}
+
+.foot {
+  border-radius: 50% 50% 50% 50%;
+}
+
+/* -- Tail -- */
+.pet-tail {
+  position: absolute;
+  z-index: 1;
+}
+
+/* -- Extra (species-specific, e.g. whiskers holder) -- */
+.pet-extra {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 6;
+}
+
+/* =============================================================
+   2B.  CAT  (.pet-cat)
+   ============================================================= */
+
+.pet-cat .pet-head {
+  background: var(--clr-cat);
+}
+
+.pet-cat .pet-torso {
+  width: 52px;
+  height: 42px;
+  background: var(--clr-cat);
+  border-radius: 45% 45% 50% 50%;
+}
+
+/* Pointy triangle ears */
+.pet-cat .ear {
+  width: 0;
+  height: 0;
+  border-left: 10px solid transparent;
+  border-right: 10px solid transparent;
+  border-bottom: 18px solid var(--clr-cat);
+  top: -12px;
+}
+.pet-cat .ear-l { left: 4px; transform: rotate(-8deg); }
+.pet-cat .ear-r { right: 4px; transform: rotate(8deg); }
+
+/* Inner ear */
+.pet-cat .ear::after {
+  content: "";
+  position: absolute;
+  top: 6px;
+  left: -5px;
+  width: 0;
+  height: 0;
+  border-left: 5px solid transparent;
+  border-right: 5px solid transparent;
+  border-bottom: 10px solid var(--clr-cat-dark);
+}
+
+/* Nose - small pink triangle */
+.pet-cat .nose {
+  width: 0;
+  height: 0;
+  border-left: 3px solid transparent;
+  border-right: 3px solid transparent;
+  border-top: 4px solid var(--clr-nose-pink);
+}
+
+/* Whiskers via pet-extra pseudo elements */
+.pet-cat .pet-extra::before,
+.pet-cat .pet-extra::after {
+  content: "";
+  position: absolute;
+  top: 55%;
+  height: 1px;
+  background: var(--clr-whisker);
+  z-index: 8;
+}
+
+/* Left whiskers (stacked via box-shadow) */
+.pet-cat .pet-extra::before {
+  left: 6px;
+  width: 18px;
+  box-shadow:
+    0 0 0 0 var(--clr-whisker),
+    0 5px 0 0 var(--clr-whisker),
+    0 -5px 0 0 var(--clr-whisker);
+}
+
+/* Right whiskers */
+.pet-cat .pet-extra::after {
+  right: 6px;
+  width: 18px;
+  box-shadow:
+    0 0 0 0 var(--clr-whisker),
+    0 5px 0 0 var(--clr-whisker),
+    0 -5px 0 0 var(--clr-whisker);
+}
+
+/* Cat tail - curved */
+.pet-cat .pet-tail {
+  right: 2px;
+  bottom: 30px;
+  width: 8px;
+  height: 30px;
+  background: var(--clr-cat);
+  border-radius: 4px 4px 0 50%;
+  transform-origin: bottom center;
+  transform: rotate(-15deg);
+  animation: tailWag 1.2s ease-in-out infinite;
+}
+.pet-cat .pet-tail::after {
+  content: "";
+  position: absolute;
+  top: -6px;
+  left: -4px;
+  width: 14px;
+  height: 10px;
+  background: var(--clr-cat);
+  border-radius: 50% 50% 0 0;
+}
+
+/* Cat arms */
+.pet-cat .pet-arms {
+  top: 62%;
+}
+.pet-cat .arm {
+  width: 10px;
+  height: 16px;
+  background: var(--clr-cat);
+  border-radius: 40% 40% 50% 50%;
+}
+.pet-cat .arm-l { left: 22px; }
+.pet-cat .arm-r { right: 22px; }
+
+/* Cat feet */
+.pet-cat .foot {
+  width: 16px;
+  height: 10px;
+  background: var(--clr-cat);
+}
+
+/* =============================================================
+   2C.  DOG  (.pet-dog)
+   ============================================================= */
+
+.pet-dog .pet-head {
+  background: var(--clr-dog);
+  width: 74px;
+  height: 70px;
+}
+
+.pet-dog .pet-torso {
+  width: 56px;
+  height: 44px;
+  background: var(--clr-dog);
+  border-radius: 45% 45% 50% 50%;
+}
+
+/* Floppy ears - rounded rectangles */
+.pet-dog .ear {
+  width: 18px;
+  height: 28px;
+  background: var(--clr-dog-dark);
+  border-radius: 40% 40% 55% 55%;
+  top: 4px;
+}
+.pet-dog .ear-l { left: -4px; transform: rotate(10deg); }
+.pet-dog .ear-r { right: -4px; transform: rotate(-10deg); }
+
+/* Dog eyes - slightly larger highlights for puppy look */
+.pet-dog .eye {
+  width: 11px;
+  height: 11px;
+}
+.pet-dog .eye::after {
+  width: 4px;
+  height: 4px;
+}
+
+/* Dog nose - oval, larger than cat */
+.pet-dog .nose {
+  width: 8px;
+  height: 6px;
+  background: var(--clr-eye);
+  border-radius: 50%;
+}
+
+/* Dog mouth */
+.pet-dog .mouth {
+  width: 12px;
+  height: 5px;
+}
+
+/* Dog tongue (appears on happy/ecstatic via mood overrides) */
+.pet-dog .mouth::after {
+  content: "";
+  display: none;
+  position: absolute;
+  bottom: -6px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 6px;
+  height: 6px;
+  background: #FFA0B4;
+  border-radius: 0 0 50% 50%;
+}
+
+/* Dog tail - short, stubby */
+.pet-dog .pet-tail {
+  right: 6px;
+  bottom: 36px;
+  width: 10px;
+  height: 16px;
+  background: var(--clr-dog);
+  border-radius: 50% 50% 30% 30%;
+  transform-origin: bottom center;
+  animation: tailWag 0.4s ease-in-out infinite;
+}
+
+/* Dog arms */
+.pet-dog .pet-arms {
+  top: 62%;
+}
+.pet-dog .arm {
+  width: 12px;
+  height: 16px;
+  background: var(--clr-dog);
+  border-radius: 40% 40% 50% 50%;
+}
+.pet-dog .arm-l { left: 20px; }
+.pet-dog .arm-r { right: 20px; }
+
+/* Dog feet - slightly bigger */
+.pet-dog .foot {
+  width: 18px;
+  height: 12px;
+  background: var(--clr-dog);
+}
+
+/* =============================================================
+   2D.  BUNNY  (.pet-bunny)
+   ============================================================= */
+
+.pet-bunny .pet-head {
+  background: var(--clr-bunny);
+}
+
+.pet-bunny .pet-torso {
+  width: 48px;
+  height: 38px;
+  background: var(--clr-bunny);
+  border-radius: 45% 45% 50% 50%;
+}
+
+/* Long upright ears */
+.pet-bunny .ear {
+  width: 14px;
+  height: 34px;
+  background: var(--clr-bunny);
+  border-radius: 45% 45% 30% 30%;
+  top: -28px;
+}
+.pet-bunny .ear-l { left: 12px; transform: rotate(-6deg); }
+.pet-bunny .ear-r { right: 12px; transform: rotate(6deg); }
+
+/* Inner ear pink */
+.pet-bunny .ear::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 7px;
+  height: 22px;
+  background: var(--clr-bunny-dark);
+  border-radius: 45%;
+  opacity: 0.6;
+}
+
+/* Bunny eyes - bigger for cute look */
+.pet-bunny .eye {
+  width: 12px;
+  height: 12px;
+}
+.pet-bunny .eye::after {
+  width: 4px;
+  height: 4px;
+  top: 2px;
+  right: 2px;
+}
+
+/* Bunny nose - small circle */
+.pet-bunny .nose {
+  width: 5px;
+  height: 4px;
+  background: var(--clr-nose-pink);
+  border-radius: 50%;
+}
+
+/* Bunny mouth */
+.pet-bunny .mouth {
+  width: 8px;
+  height: 4px;
+}
+
+/* Cotton tail (white puff) via pet-tail */
+.pet-bunny .pet-tail {
+  right: 14px;
+  bottom: 34px;
+  width: 12px;
+  height: 12px;
+  background: #FFFFFF;
+  border-radius: 50%;
+  box-shadow: inset -1px -1px 2px rgba(0,0,0,0.05);
+}
+
+/* Bunny arms */
+.pet-bunny .pet-arms {
+  top: 60%;
+}
+.pet-bunny .arm {
+  width: 9px;
+  height: 14px;
+  background: var(--clr-bunny);
+  border-radius: 40% 40% 50% 50%;
+}
+.pet-bunny .arm-l { left: 24px; }
+.pet-bunny .arm-r { right: 24px; }
+
+/* Bunny feet - longer */
+.pet-bunny .foot {
+  width: 20px;
+  height: 10px;
+  background: var(--clr-bunny);
+  border-radius: 50% 50% 45% 45%;
+}
+
+/* =============================================================
+   2E.  HAMSTER  (.pet-hamster)
+   ============================================================= */
+
+.pet-hamster .pet-head {
+  background: var(--clr-hamster);
+  width: 74px;
+  height: 72px;
+}
+
+.pet-hamster .pet-torso {
+  width: 56px;
+  height: 34px;
+  background: var(--clr-hamster);
+  border-radius: 50% 50% 50% 50%;
+}
+
+/* Tiny round ears */
+.pet-hamster .ear {
+  width: 14px;
+  height: 14px;
+  background: var(--clr-hamster);
+  border-radius: 50%;
+  top: -4px;
+}
+.pet-hamster .ear::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 8px;
+  height: 8px;
+  background: var(--clr-hamster-dark);
+  border-radius: 50%;
+  opacity: 0.5;
+}
+.pet-hamster .ear-l { left: 4px; }
+.pet-hamster .ear-r { right: 4px; }
+
+/* Hamster eyes - small beady, close together */
+.pet-hamster .eye {
+  width: 8px;
+  height: 8px;
+  top: 44%;
+}
+.pet-hamster .eye-l { left: 28%; }
+.pet-hamster .eye-r { right: 28%; }
+.pet-hamster .eye::after {
+  width: 2px;
+  height: 2px;
+}
+
+/* Tiny pink nose */
+.pet-hamster .nose {
+  width: 4px;
+  height: 3px;
+  background: var(--clr-nose-pink);
+  border-radius: 50%;
+}
+
+/* Hamster mouth */
+.pet-hamster .mouth {
+  width: 8px;
+  height: 4px;
+}
+
+/* Puffy cheeks - bigger blushes */
+.pet-hamster .blush {
+  width: 16px;
+  height: 14px;
+  top: 50%;
+  opacity: 0.5;
+}
+.pet-hamster .blush-l { left: -2px; }
+.pet-hamster .blush-r { right: -2px; }
+
+/* No visible tail */
+.pet-hamster .pet-tail { display: none; }
+
+/* Hamster arms - very stubby */
+.pet-hamster .pet-arms {
+  top: 62%;
+}
+.pet-hamster .arm {
+  width: 8px;
+  height: 12px;
+  background: var(--clr-hamster);
+  border-radius: 40% 40% 50% 50%;
+}
+.pet-hamster .arm-l { left: 22px; }
+.pet-hamster .arm-r { right: 22px; }
+
+/* Hamster feet - stubby */
+.pet-hamster .foot {
+  width: 14px;
+  height: 8px;
+  background: var(--clr-hamster);
+}
+
+/* =============================================================
+   2F.  PENGUIN  (.pet-penguin)
+   ============================================================= */
+
+.pet-penguin .pet-head {
+  background: var(--clr-penguin);
+  width: 66px;
+  height: 64px;
+}
+
+.pet-penguin .pet-torso {
+  width: 58px;
+  height: 50px;
+  background: var(--clr-penguin);
+  border-radius: 45% 45% 50% 50%;
+  overflow: visible;
+}
+
+/* White belly */
+.pet-penguin .pet-torso::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 38px;
+  height: 38px;
+  background: var(--clr-penguin-belly);
+  border-radius: 50% 50% 48% 48%;
+}
+
+/* No ears */
+.pet-penguin .ear { display: none; }
+
+/* Penguin eyes - small round */
+.pet-penguin .eye {
+  width: 9px;
+  height: 9px;
+}
+
+/* Orange/yellow beak */
+.pet-penguin .nose {
+  width: 0;
+  height: 0;
+  border-left: 4px solid transparent;
+  border-right: 4px solid transparent;
+  border-top: 6px solid var(--clr-penguin-beak);
+}
+
+/* Penguin mouth */
+.pet-penguin .mouth {
+  top: 65%;
+  width: 8px;
+  height: 3px;
+}
+
+/* Flipper arms */
+.pet-penguin .pet-arms {
+  top: 55%;
+}
+.pet-penguin .arm {
+  width: 12px;
+  height: 22px;
+  background: var(--clr-penguin);
+  border-radius: 50% 50% 60% 40%;
+}
+.pet-penguin .arm-l {
+  left: 16px;
+  transform: rotate(15deg);
+  border-radius: 40% 60% 50% 50%;
+}
+.pet-penguin .arm-r {
+  right: 16px;
+  transform: rotate(-15deg);
+  border-radius: 60% 40% 50% 50%;
+}
+
+/* Orange webbed feet */
+.pet-penguin .foot {
+  width: 16px;
+  height: 8px;
+  background: var(--clr-penguin-feet);
+  border-radius: 40% 40% 50% 50%;
+}
+
+/* No tail */
+.pet-penguin .pet-tail { display: none; }
+
+/* =============================================================
+   3.  MOOD VARIATIONS
+   ============================================================= */
+
+/* ---- mood-happy (default-ish) ---- */
+.mood-happy .pet-body {
+  animation: petFloat 2s ease-in-out infinite;
+}
+
+.mood-happy .mouth {
+  border-bottom: 2px solid var(--clr-mouth);
+  border-radius: 0 0 50% 50%;
+}
+
+/* Dog tongue shows on happy */
+.mood-happy.pet-dog .mouth::after {
+  display: block;
+}
+
+/* ---- mood-ecstatic ---- */
+.mood-ecstatic .pet-body {
+  animation: petBounce 0.8s ease-in-out infinite;
+}
+
+/* Eyes become happy arcs ^^ */
+.mood-ecstatic .eye {
+  width: 12px;
+  height: 6px;
+  background: transparent;
+  border-top: 3px solid var(--clr-eye);
+  border-radius: 50% 50% 0 0;
+  animation: none;
+}
+.mood-ecstatic .eye::after {
+  display: none;
+}
+
+/* Wide open smile */
+.mood-ecstatic .mouth {
+  width: 16px;
+  height: 8px;
+  border: none;
+  background: var(--clr-mouth);
+  border-radius: 0 0 50% 50%;
+}
+
+/* Dog tongue on ecstatic */
+.mood-ecstatic.pet-dog .mouth::after {
+  display: block;
+  bottom: -5px;
+}
+
+/* Sparkle effect on ecstatic */
+.mood-ecstatic .pet-effects::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 10px;
+  width: 8px;
+  height: 8px;
+  background: #FFD700;
+  clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  animation: sparkle 1.2s ease-in-out infinite;
+}
+.mood-ecstatic .pet-effects::after {
+  content: "";
+  position: absolute;
+  top: 4px;
+  left: 8px;
+  width: 6px;
+  height: 6px;
+  background: #FFD700;
+  clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  animation: sparkle 1.2s ease-in-out 0.4s infinite;
+}
+
+/* ---- mood-neutral ---- */
+.mood-neutral .pet-body {
+  animation: petFloat 3.5s ease-in-out infinite;
+}
+
+/* Half-lidded eyes */
+.mood-neutral .eye {
+  height: 6px;
+  border-radius: 50% 50% 40% 40%;
+  animation: none;
+}
+
+/* Flat mouth */
+.mood-neutral .mouth {
+  width: 10px;
+  height: 0;
+  border-bottom: 2px solid var(--clr-mouth);
+  border-radius: 0;
+}
+
+/* ---- mood-hungry ---- */
+.mood-hungry .pet-body {
+  animation: petFloat 2s ease-in-out infinite;
+  transform: rotate(-3deg);
+}
+
+/* Slightly droopy/worried eyes */
+.mood-hungry .eye {
+  animation: none;
+}
+.mood-hungry .eye-l {
+  transform: rotate(6deg);
+}
+.mood-hungry .eye-r {
+  transform: rotate(-6deg);
+}
+
+/* Slight frown */
+.mood-hungry .mouth {
+  width: 10px;
+  height: 4px;
+  border-bottom: none;
+  border-top: 2px solid var(--clr-mouth);
+  border-radius: 50% 50% 0 0;
+}
+
+/* Thought bubble with onigiri */
+.mood-hungry .pet-effects::after {
+  content: "\1F359";
+  position: absolute;
+  top: -24px;
+  right: -6px;
+  font-size: 16px;
+  animation: petFloat 1.5s ease-in-out infinite;
+}
+.mood-hungry .pet-effects::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  right: 6px;
+  width: 6px;
+  height: 6px;
+  background: #E8E8E8;
+  border-radius: 50%;
+  opacity: 0.6;
+}
+
+/* Slight shake */
+.mood-hungry .pet-body {
+  animation: petFloat 2s ease-in-out infinite, hungryShake 0.8s ease-in-out infinite;
+}
+
+/* ---- mood-sad ---- */
+.mood-sad .pet-body {
+  animation: droop 3s ease-in-out infinite;
+}
+
+/* Droopy eyes */
+.mood-sad .eye {
+  animation: none;
+}
+.mood-sad .eye-l {
+  transform: rotate(8deg);
+}
+.mood-sad .eye-r {
+  transform: rotate(-8deg);
+}
+
+/* Tear on right eye */
+.mood-sad .eye-r::before {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 6px;
+  background: var(--clr-tear);
+  border-radius: 50% 50% 50% 50%;
+  opacity: 0.8;
+  animation: tearDrop 2s ease-in infinite;
+}
+
+/* Frown */
+.mood-sad .mouth {
+  width: 12px;
+  height: 4px;
+  border-bottom: none;
+  border-top: 2px solid var(--clr-mouth);
+  border-radius: 50% 50% 0 0;
+}
+
+/* Ears droop for cat/dog/bunny */
+.mood-sad.pet-cat .ear-l  { transform: rotate(-20deg); }
+.mood-sad.pet-cat .ear-r  { transform: rotate(20deg); }
+.mood-sad.pet-dog .ear-l  { transform: rotate(18deg) translateY(4px); }
+.mood-sad.pet-dog .ear-r  { transform: rotate(-18deg) translateY(4px); }
+.mood-sad.pet-bunny .ear-l { transform: rotate(-18deg); }
+.mood-sad.pet-bunny .ear-r { transform: rotate(18deg); }
+
+/* ---- mood-sleeping ---- */
+.mood-sleeping .pet-body {
+  animation: none;
+}
+
+/* Eyes are lines */
+.mood-sleeping .eye {
+  width: 10px;
+  height: 2px;
+  border-radius: 1px;
+  animation: none;
+}
+.mood-sleeping .eye::after {
+  display: none;
+}
+
+/* Tiny mouth */
+.mood-sleeping .mouth {
+  width: 6px;
+  height: 0;
+  border-bottom: 1px solid var(--clr-mouth);
+  border-radius: 0;
+}
+
+/* Breathing animation on torso */
+.mood-sleeping .pet-torso {
+  animation: breathe 2.5s ease-in-out infinite;
+  transform-origin: bottom center;
+}
+
+/* Zzz floating */
+.mood-sleeping .pet-effects::after {
+  content: "Zzz";
+  position: absolute;
+  top: -10px;
+  right: -2px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #B0BEC5;
+  font-family: "Nunito", "Comic Sans MS", sans-serif;
+  animation: zzzFloat 2.5s ease-in-out infinite;
+}
+
+/* =============================================================
+   4.  OUTFIT OVERLAYS
+   ============================================================= */
+
+.pet-outfit {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 10;
+}
+
+.outfit-slot {
+  position: absolute;
+  display: none; /* hidden until an outfit class is set */
+}
+
+/* ---- Hat slot: top of head ---- */
+.outfit-hat {
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Red Bow */
+.has-red-bow .outfit-hat {
+  display: block;
+  top: -2px;
+  width: 22px;
+  height: 14px;
+}
+.has-red-bow .outfit-hat::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 10px;
+  height: 10px;
+  background: #F472B6;
+  border-radius: 50% 50% 10% 50%;
+  transform: rotate(-10deg);
+}
+.has-red-bow .outfit-hat::after {
+  content: "";
+  position: absolute;
+  top: 0;
+  right: 0;
+  width: 10px;
+  height: 10px;
+  background: #F472B6;
+  border-radius: 50% 50% 50% 10%;
+  transform: rotate(10deg);
+}
+
+/* Straw Hat */
+.has-straw-hat .outfit-hat {
+  display: block;
+  top: -10px;
+  width: 40px;
+  height: 14px;
+  background: #D4A96A;
+  border-radius: 50% 50% 10% 10%;
+}
+.has-straw-hat .outfit-hat::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 52px;
+  height: 6px;
+  background: #D4A96A;
+  border-radius: 50%;
+}
+
+/* Crown */
+.has-crown .outfit-hat {
+  display: block;
+  top: -12px;
+  width: 26px;
+  height: 10px;
+  background: #F59E0B;
+  border-radius: 2px 2px 0 0;
+}
+.has-crown .outfit-hat::before {
+  content: "";
+  position: absolute;
+  top: -8px;
+  left: 0;
+  width: 26px;
+  height: 8px;
+  background:
+    conic-gradient(from 0deg at 10% 100%, transparent 0deg, #F59E0B 0deg 70deg, transparent 70deg),
+    conic-gradient(from 0deg at 50% 100%, transparent 0deg, #F59E0B 0deg 70deg, transparent 70deg),
+    conic-gradient(from 0deg at 90% 100%, transparent 0deg, #F59E0B 0deg 70deg, transparent 70deg);
+  clip-path: polygon(0% 100%, 8% 0%, 20% 60%, 50% 0%, 80% 60%, 92% 0%, 100% 100%);
+  background-color: #F59E0B;
+}
+.has-crown .outfit-hat::after {
+  content: "";
+  position: absolute;
+  top: -4px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 4px;
+  height: 4px;
+  background: #FCD34D;
+  border-radius: 50%;
+}
+
+/* Flower Wreath */
+.has-flower-wreath .outfit-hat {
+  display: block;
+  top: -6px;
+  width: 36px;
+  height: 10px;
+  background: transparent;
+  /* Flowers as dot shadows */
+  box-shadow:
+    -12px 2px 0 2px #FBCFE8,
+     -6px -2px 0 2px #A5F3FC,
+      0px  0px 0 2px #FDE68A,
+      6px -2px 0 2px #C4B5FD,
+     12px  2px 0 2px #FBCFE8,
+      3px  2px 0 1px #86EFAC,
+     -3px  2px 0 1px #86EFAC;
+  border-radius: 50%;
+}
+
+/* Bandana */
+.has-bandana .outfit-hat {
+  display: block;
+  top: -4px;
+  width: 0;
+  height: 0;
+  border-left: 18px solid transparent;
+  border-right: 18px solid transparent;
+  border-bottom: 14px solid #F87171;
+}
+.has-bandana .outfit-hat::after {
+  content: "";
+  position: absolute;
+  top: 5px;
+  left: -8px;
+  width: 3px;
+  height: 3px;
+  background: white;
+  border-radius: 50%;
+  box-shadow:
+    6px 0 0 1px white,
+    12px 0 0 1px white,
+    3px 3px 0 1px white,
+    9px 3px 0 1px white;
+}
+
+/* ---- Accessory slot: face level ---- */
+.outfit-acc {
+  top: 42%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Glasses */
+.has-glasses .outfit-acc {
+  display: block;
+  width: 36px;
+  height: 14px;
+}
+.has-glasses .outfit-acc::before {
+  content: "";
+  position: absolute;
+  left: 0;
+  top: 0;
+  width: 14px;
+  height: 12px;
+  border: 2px solid #666;
+  border-radius: 50%;
+}
+.has-glasses .outfit-acc::after {
+  content: "";
+  position: absolute;
+  right: 0;
+  top: 0;
+  width: 14px;
+  height: 12px;
+  border: 2px solid #666;
+  border-radius: 50%;
+  box-shadow: -8px 4px 0 -5px #666; /* bridge */
+}
+
+/* Scarf */
+.has-scarf .outfit-acc {
+  display: block;
+  top: 58%;
+  width: 44px;
+  height: 10px;
+  background: #FDA4AF;
+  border-radius: 4px;
+}
+.has-scarf .outfit-acc::after {
+  content: "";
+  position: absolute;
+  bottom: -8px;
+  right: 6px;
+  width: 8px;
+  height: 14px;
+  background: #FDA4AF;
+  border-radius: 0 0 4px 4px;
+}
+
+/* ---- Body slot: torso ---- */
+.outfit-body {
+  top: 50%;
+  left: 50%;
+  transform: translateX(-50%);
+}
+
+/* Cape */
+.has-cape .outfit-body {
+  display: block;
+  top: 38%;
+  z-index: -1;
+  width: 0;
+  height: 0;
+  border-left: 28px solid transparent;
+  border-right: 28px solid transparent;
+  border-top: 50px solid #A78BFA;
+  border-radius: 0 0 12px 12px;
+  opacity: 0.85;
+}
+.has-cape .outfit-body::after {
+  content: "";
+  position: absolute;
+  top: -50px;
+  left: -28px;
+  width: 56px;
+  height: 50px;
+  background: linear-gradient(180deg, #C4B5FD 0%, #A78BFA 100%);
+  clip-path: polygon(0 0, 100% 0, 85% 100%, 15% 100%);
+  border-radius: 0 0 12px 12px;
+}
+
+/* Kimono Sash */
+.has-kimono-sash .outfit-body {
+  display: block;
+  top: 56%;
+  width: 50px;
+  height: 10px;
+  background: repeating-linear-gradient(
+    90deg,
+    #F472B6 0px,
+    #F472B6 4px,
+    #FBCFE8 4px,
+    #FBCFE8 8px
+  );
+  border-radius: 3px;
+}
+.has-kimono-sash .outfit-body::after {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 8px;
+  height: 8px;
+  background: #F472B6;
+  border-radius: 50%;
+}
+
+/* Backpack */
+.has-backpack .outfit-body {
+  display: block;
+  top: 42%;
+  z-index: -1;
+  width: 20px;
+  height: 22px;
+  background: #FCA5A5;
+  border-radius: 3px 3px 6px 6px;
+  transform: translateX(-50%) translateX(20px);
+}
+.has-backpack .outfit-body::before {
+  content: "";
+  position: absolute;
+  top: 2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 4px;
+  border: 2px solid #F87171;
+  border-bottom: none;
+  border-radius: 4px 4px 0 0;
+}
+.has-backpack .outfit-body::after {
+  content: "";
+  position: absolute;
+  bottom: 3px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 10px;
+  height: 6px;
+  background: #F87171;
+  border-radius: 2px;
+}
+
+/* =============================================================
+   5.  EFFECT PARTICLES
+   ============================================================= */
+
+.pet-effects {
+  position: absolute;
+  inset: 0;
+  pointer-events: none;
+  z-index: 12;
+}
+
+/* --- Sparkle --- */
+.fx-sparkle {
+  position: absolute;
+  width: 8px;
+  height: 8px;
+  background: #FFD700;
+  clip-path: polygon(50% 0%,61% 35%,98% 35%,68% 57%,79% 91%,50% 70%,21% 91%,32% 57%,2% 35%,39% 35%);
+  animation: sparkle 1.4s ease-in-out infinite;
+  opacity: 0;
+}
+.fx-sparkle:nth-child(1) { top: 5%; left: 10%; animation-delay: 0s; }
+.fx-sparkle:nth-child(2) { top: 0%; right: 15%; animation-delay: 0.3s; }
+.fx-sparkle:nth-child(3) { top: 15%; left: 50%; animation-delay: 0.7s; }
+.fx-sparkle:nth-child(4) { top: 10%; right: 5%; animation-delay: 1.0s; }
+
+/* --- Heart --- */
+.fx-heart {
+  position: absolute;
+  width: 10px;
+  height: 10px;
+  animation: heartFloat 1.8s ease-out infinite;
+  opacity: 0;
+}
+.fx-heart::before,
+.fx-heart::after {
+  content: "";
+  position: absolute;
+  width: 6px;
+  height: 9px;
+  background: var(--clr-heart);
+  border-radius: 6px 6px 0 0;
+}
+.fx-heart::before {
+  left: 0;
+  transform: rotate(-45deg);
+  transform-origin: bottom right;
+}
+.fx-heart::after {
+  right: 0;
+  transform: rotate(45deg);
+  transform-origin: bottom left;
+}
+.fx-heart:nth-child(1) { top: 0; left: 20%; animation-delay: 0s; }
+.fx-heart:nth-child(2) { top: -5%; left: 55%; animation-delay: 0.5s; }
+.fx-heart:nth-child(3) { top: 5%; right: 10%; animation-delay: 1.0s; }
+
+/* --- Zzz --- */
+.fx-zzz {
+  position: absolute;
+  top: 10%;
+  right: 5%;
+  font-size: 12px;
+  font-weight: 700;
+  color: #B0BEC5;
+  font-family: "Nunito", "Comic Sans MS", sans-serif;
+  animation: zzzFloat 2s ease-in-out infinite;
+  opacity: 0;
+}
+.fx-zzz:nth-child(1) { animation-delay: 0s; font-size: 10px; }
+.fx-zzz:nth-child(2) { animation-delay: 0.7s; right: -2%; font-size: 13px; }
+.fx-zzz:nth-child(3) { animation-delay: 1.4s; right: -8%; font-size: 16px; }
+
+/* --- Tear --- */
+.fx-tear {
+  position: absolute;
+  top: 48%;
+  width: 4px;
+  height: 6px;
+  background: var(--clr-tear);
+  border-radius: 50% 50% 50% 50%;
+  opacity: 0;
+  animation: tearDrop 2s ease-in infinite;
+}
+.fx-tear.tear-l { left: 32%; animation-delay: 0.5s; }
+.fx-tear.tear-r { right: 32%; }
+
+/* --- Sweat --- */
+.fx-sweat {
+  position: absolute;
+  top: 22%;
+  right: 25%;
+  width: 5px;
+  height: 7px;
+  background: var(--clr-tear);
+  border-radius: 50% 50% 50% 50%;
+  opacity: 0;
+  animation: sweatDrop 1.8s ease-in infinite;
+}
+.fx-sweat::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 0;
+  height: 0;
+  border-left: 2px solid transparent;
+  border-right: 2px solid transparent;
+  border-bottom: 3px solid var(--clr-tear);
+}
+
+/* =============================================================
+   6.  PET SELECTION CARDS
+   ============================================================= */
+
+.pet-select-card {
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-end;
+  padding: 14px 12px 10px;
+  border: 2px solid #F3E8FF;
+  border-radius: 16px;
+  background: linear-gradient(135deg, #FFFBFE 0%, #FFF0F5 100%);
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  user-select: none;
+  -webkit-user-select: none;
+}
+
+.pet-select-card:hover {
+  transform: scale(1.06);
+  box-shadow: 0 4px 16px rgba(244, 114, 182, 0.18);
+  border-color: #FBCFE8;
+}
+
+.pet-select-card:active {
+  transform: scale(1.10);
+  box-shadow: 0 2px 8px rgba(244, 114, 182, 0.25);
+}
+
+.pet-select-card .pet {
+  transform: scale(0.7);
+  transform-origin: bottom center;
+  pointer-events: none;
+}
+
+.pet-select-card .pet-type-name {
+  margin-top: -8px;
+  font-size: 13px;
+  font-weight: 700;
+  color: #9B7DAD;
+  font-family: "Nunito", "Comic Sans MS", sans-serif;
+  letter-spacing: 0.5px;
+}
+
+/* =============================================================
+   7.  KEYFRAME ANIMATIONS
+   ============================================================= */
+
+@keyframes petFloat {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-6px); }
+}
+
+@keyframes petBounce {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(-12px); }
+}
+
+@keyframes petBlink {
+  0%, 93%, 100% { height: var(--eye-h, 10px); }
+  95%, 97%      { height: 2px; }
+}
+
+@keyframes sparkle {
+  0%   { transform: scale(0) rotate(0deg);   opacity: 0; }
+  50%  { transform: scale(1) rotate(90deg);  opacity: 1; }
+  100% { transform: scale(0) rotate(180deg); opacity: 0; }
+}
+
+@keyframes heartFloat {
+  0%   { transform: translateY(0) scale(1);     opacity: 1; }
+  100% { transform: translateY(-40px) scale(0.5); opacity: 0; }
+}
+
+@keyframes zzzFloat {
+  0%   { transform: translate(0, 0);         opacity: 1; }
+  100% { transform: translate(15px, -30px);  opacity: 0; }
+}
+
+@keyframes breathe {
+  0%, 100% { transform: scaleY(1); }
+  50%      { transform: scaleY(1.03); }
+}
+
+@keyframes tailWag {
+  0%, 100% { transform: rotate(-10deg); }
+  50%      { transform: rotate(10deg); }
+}
+
+@keyframes droop {
+  0%, 100% { transform: translateY(0); }
+  50%      { transform: translateY(3px); }
+}
+
+@keyframes tearDrop {
+  0%   { transform: translateY(0); opacity: 0.8; }
+  80%  { transform: translateY(12px); opacity: 0.5; }
+  100% { transform: translateY(16px); opacity: 0; }
+}
+
+@keyframes sweatDrop {
+  0%        { transform: translateY(0); opacity: 0; }
+  10%       { opacity: 0.7; }
+  60%, 80%  { transform: translateY(6px); opacity: 0.7; }
+  100%      { transform: translateY(10px); opacity: 0; }
+}
+
+@keyframes hungryShake {
+  0%, 100% { transform: translateX(0); }
+  25%      { transform: translateX(-2px); }
+  75%      { transform: translateX(2px); }
+}
+
+@keyframes shadowPulse {
+  0%, 100% { transform: translateX(-50%) scale(1);    opacity: 0.10; }
+  50%      { transform: translateX(-50%) scale(0.92); opacity: 0.07; }
+}
+
+/* =============================================================
+   8.  RESPONSIVE / UTILITIES
+   ============================================================= */
+
+/* Reduced motion: turn off bouncy stuff, keep static poses */
+@media (prefers-reduced-motion: reduce) {
+  .pet-body,
+  .pet-torso,
+  .pet-tail,
+  .eye,
+  .pet-effects::after,
+  .pet-effects::before,
+  .fx-sparkle,
+  .fx-heart,
+  .fx-zzz,
+  .fx-tear,
+  .fx-sweat,
+  .pet-shadow {
+    animation: none !important;
+  }
+}
+
+/* Utility: scale wrapper for embedding pets at different sizes */
+.pet-xs { transform: scale(0.5); transform-origin: bottom center; }
+.pet-sm { transform: scale(0.7); transform-origin: bottom center; }
+.pet-lg { transform: scale(1.4); transform-origin: bottom center; }
+.pet-xl { transform: scale(1.8); transform-origin: bottom center; }
